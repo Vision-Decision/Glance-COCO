@@ -1,0 +1,29 @@
+# pipeline outputs (large, regenerable) — share results through docs/results/ instead
+out/
+*.jsonl
+!tests/fixtures/*.jsonl
+
+# secrets: never commit API keys
+.env
+.secrets/
+*key*
+!.env.example
+
+# images rendered for audits / slides
+*.jpg
+*.png
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+
+# editors / OS
+.DS_Store
+.idea/
+.vscode/

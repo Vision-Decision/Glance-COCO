@@ -1,0 +1,807 @@
+{
+ "date": "2026-11-18",
+ "method": "stratified: 8 random queries per kind from 150 training images; rendered and judged by eye",
+ "correct_per_kind": {
+  "short": "6/8",
+  "medium": "7/8",
+  "long": "8/8",
+  "casual": "8/8",
+  "group": "6/8",
+  "function": "6/8",
+  "hneg_attribute": "8/8",
+  "hneg_relation": "8/8",
+  "cat_only": "5/8",
+  "cat_all": "8/8",
+  "neg_count": "8/8",
+  "neg_position": "8/8",
+  "neg_near": "7/8",
+  "gref_multi": "8/8"
+ },
+ "total": "101/112",
+ "items": [
+  {
+   "kind": "short",
+   "image_id": 360307,
+   "text": "左侧球员",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "short",
+   "image_id": 136790,
+   "text": "木长椅",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "short",
+   "image_id": 164172,
+   "text": "blue tie",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "short",
+   "image_id": 211445,
+   "text": "中间的橙子",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "short",
+   "image_id": 196766,
+   "text": "红短裤男子",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "short",
+   "image_id": 323934,
+   "text": "蓝衣男子",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "short",
+   "image_id": 287792,
+   "text": "green tie",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "short",
+   "image_id": 286816,
+   "text": "black remote",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "medium",
+   "image_id": 131366,
+   "text": "woman in white holding a racket and towel",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "medium",
+   "image_id": 554621,
+   "text": "snowboard under the snowboarder's feet",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "medium",
+   "image_id": 469619,
+   "text": "silver spoon at the top right",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "medium",
+   "image_id": 323934,
+   "text": "展示台中间的一把香蕉",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "medium",
+   "image_id": 566166,
+   "text": "小象旁边穿灰T恤的微笑男子",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "medium",
+   "image_id": 58714,
+   "text": "white pickup truck in the parking lot",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "medium",
+   "image_id": 423310,
+   "text": "cream-colored play oven on the left",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "medium",
+   "image_id": 176194,
+   "text": "右边透明的玻璃杯",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "long",
+   "image_id": 45343,
+   "text": "带有绿色“Habana Cuba”标志、挡风玻璃上有数字31的大型白蓝相间公交车，行驶在街道上",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "long",
+   "image_id": 212690,
+   "text": "中间那个白色马桶，盖子高高掀起向后靠，正好立在砖墙上的停车告示牌下方",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "long",
+   "image_id": 254984,
+   "text": "A black backpack sitting on the floor at the bottom right corner of the photo, next to the bed and a pair of sandals.",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "long",
+   "image_id": 310617,
+   "text": "A police officer in a dark leather jacket, white helmet and tall boots sits astride the white police motorcycle, leaning toward the car window",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "long",
+   "image_id": 100253,
+   "text": "一个人戴着浅色头巾，穿着深色外套，坐在左边第二头大象的背上，面朝前方",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "long",
+   "image_id": 119443,
+   "text": "a long rectangular concrete ledge covered in colourful graffiti and blue paint, lying on the pavement in the foreground",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "long",
+   "image_id": 114226,
+   "text": "pale green ceramic cup sitting on the wooden table beside the tablet, with a hand resting near its rim",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "long",
+   "image_id": 461820,
+   "text": "成年女子穿着白色长袖衬衫，站在女孩身后，手里拿着一个透明量杯，手放在台面上",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "casual",
+   "image_id": 131366,
+   "text": "the striped sweater lady",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "casual",
+   "image_id": 427491,
+   "text": "the chair in the bottom right",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "casual",
+   "image_id": 568177,
+   "text": "the blurry guy on the left edge",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "casual",
+   "image_id": 330663,
+   "text": "那只正看着我们的长颈鹿",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "casual",
+   "image_id": 330663,
+   "text": "the giraffe looking right at us",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "casual",
+   "image_id": 161246,
+   "text": "最左边那辆车",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "casual",
+   "image_id": 446036,
+   "text": "上面那块木头",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "casual",
+   "image_id": 218334,
+   "text": "the leftmost fruit in the bowl",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "group",
+   "image_id": 71631,
+   "text": "两张格子与条纹沙发",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "group",
+   "image_id": 348179,
+   "text": "两个在弄滑雪板的男人",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "group",
+   "image_id": 197863,
+   "text": "the two spoons on the table",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "group",
+   "image_id": 391065,
+   "text": "the two clear wine glasses lying in the straw",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "group",
+   "image_id": 557355,
+   "text": "俯身在放蛋糕桌子上的黑衣女子",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "group",
+   "image_id": 271435,
+   "text": "the two cupcakes on the left",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "group",
+   "image_id": 135714,
+   "text": "the two people standing on the right side",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "group",
+   "image_id": 45554,
+   "text": "击球手和裁判",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "function",
+   "image_id": 69498,
+   "text": "用来装东西的",
+   "present": true,
+   "n": 6
+  },
+  {
+   "kind": "function",
+   "image_id": 32252,
+   "text": "animals to look at on a safari",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "function",
+   "image_id": 554217,
+   "text": "显示时间的东西",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "function",
+   "image_id": 271435,
+   "text": "something to drink from",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "function",
+   "image_id": 69498,
+   "text": "可以坐的东西",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "function",
+   "image_id": 161246,
+   "text": "something to wear around the neck",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "function",
+   "image_id": 16403,
+   "text": "可以吃的东西",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "function",
+   "image_id": 196766,
+   "text": "something to throw and catch",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "hneg_attribute",
+   "image_id": 218312,
+   "text": "large brown elephant standing in shallow water",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_attribute",
+   "image_id": 37502,
+   "text": "metal chair on the right side",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_attribute",
+   "image_id": 358492,
+   "text": "左边站着的条纹狗",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_attribute",
+   "image_id": 92319,
+   "text": "桌上吃了一半的巧克力夹层蛋糕",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_attribute",
+   "image_id": 109986,
+   "text": "女孩身后的蓝帽男子",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_attribute",
+   "image_id": 313556,
+   "text": "person holding a bright red umbrella by the railing",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_attribute",
+   "image_id": 495305,
+   "text": "woman in a red skirt suit on the right",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_attribute",
+   "image_id": 220850,
+   "text": "man in white shirt on the right",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_relation",
+   "image_id": 449919,
+   "text": "站在另一个男孩后面的红衣男孩",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_relation",
+   "image_id": 266666,
+   "text": "sandwich on the left being wrapped in paper",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_relation",
+   "image_id": 71631,
+   "text": "a striped couch in front of the dining table",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_relation",
+   "image_id": 385913,
+   "text": "man in green shirt eating cake",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_relation",
+   "image_id": 116147,
+   "text": "person standing by the green couch on the right",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_relation",
+   "image_id": 313556,
+   "text": "large clear umbrella folded and dry",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_relation",
+   "image_id": 220850,
+   "text": "white tiered cake with flowers being eaten",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "hneg_relation",
+   "image_id": 16403,
+   "text": "他右手拿着的一块三明治",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "cat_only",
+   "image_id": 310617,
+   "text": "the motorcycle",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "cat_only",
+   "image_id": 469619,
+   "text": "the spoon",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "cat_only",
+   "image_id": 423310,
+   "text": "the table",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "cat_only",
+   "image_id": 69498,
+   "text": "椅子",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "cat_only",
+   "image_id": 92319,
+   "text": "the cup",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "cat_only",
+   "image_id": 16403,
+   "text": "the sandwich",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "cat_only",
+   "image_id": 423310,
+   "text": "水槽",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "cat_only",
+   "image_id": 218334,
+   "text": "the bowl",
+   "present": true,
+   "n": 1
+  },
+  {
+   "kind": "cat_all",
+   "image_id": 313285,
+   "text": "the bottles",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "cat_all",
+   "image_id": 359098,
+   "text": "the books",
+   "present": true,
+   "n": 3
+  },
+  {
+   "kind": "cat_all",
+   "image_id": 196766,
+   "text": "全部汽车",
+   "present": true,
+   "n": 4
+  },
+  {
+   "kind": "cat_all",
+   "image_id": 161246,
+   "text": "the people",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "cat_all",
+   "image_id": 386062,
+   "text": "全部键盘",
+   "present": true,
+   "n": 4
+  },
+  {
+   "kind": "cat_all",
+   "image_id": 308792,
+   "text": "the people",
+   "present": true,
+   "n": 5
+  },
+  {
+   "kind": "cat_all",
+   "image_id": 339711,
+   "text": "the benches",
+   "present": true,
+   "n": 3
+  },
+  {
+   "kind": "cat_all",
+   "image_id": 516931,
+   "text": "every person",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "neg_count",
+   "image_id": 136790,
+   "text": "两个长椅",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_count",
+   "image_id": 58714,
+   "text": "two tables",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_count",
+   "image_id": 126770,
+   "text": "三个雨伞",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_count",
+   "image_id": 71631,
+   "text": "两个花瓶",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_count",
+   "image_id": 576225,
+   "text": "五个花瓶",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_count",
+   "image_id": 196766,
+   "text": "两个椅子",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_count",
+   "image_id": 569607,
+   "text": "two forks",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_count",
+   "image_id": 52901,
+   "text": "两个椅子",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_position",
+   "image_id": 485937,
+   "text": "右边的人",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_position",
+   "image_id": 131101,
+   "text": "the backpack on the left",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_position",
+   "image_id": 29642,
+   "text": "the book on the right",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_position",
+   "image_id": 423310,
+   "text": "the teddy bear on the left",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_position",
+   "image_id": 460565,
+   "text": "左边的碗",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_position",
+   "image_id": 116147,
+   "text": "the couch on the left",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_position",
+   "image_id": 405543,
+   "text": "the knife on the left",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_position",
+   "image_id": 469619,
+   "text": "the carrot on the left",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_near",
+   "image_id": 110514,
+   "text": "一个勺子",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_near",
+   "image_id": 116147,
+   "text": "a microwave",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_near",
+   "image_id": 271195,
+   "text": "一个网球拍",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_near",
+   "image_id": 92319,
+   "text": "a spoon",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_near",
+   "image_id": 6031,
+   "text": "a dog",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_near",
+   "image_id": 461820,
+   "text": "a toaster",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_near",
+   "image_id": 581446,
+   "text": "一个酒杯",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "neg_near",
+   "image_id": 423310,
+   "text": "一个熊",
+   "present": false,
+   "n": 0
+  },
+  {
+   "kind": "gref_multi",
+   "image_id": 286816,
+   "text": "black area top left and remote on left black",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "gref_multi",
+   "image_id": 1014,
+   "text": "man white shirt on right and the man walking",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "gref_multi",
+   "image_id": 220850,
+   "text": "Person left and far guy black shirt",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "gref_multi",
+   "image_id": 516931,
+   "text": "two kids having fun",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "gref_multi",
+   "image_id": 271195,
+   "text": "red shirt and catcher",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "gref_multi",
+   "image_id": 578037,
+   "text": "guy in black shirt next to yello shirt guy and man in yellow",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "gref_multi",
+   "image_id": 52901,
+   "text": "kid on far left and kid middle",
+   "present": true,
+   "n": 2
+  },
+  {
+   "kind": "gref_multi",
+   "image_id": 566166,
+   "text": "the baby elephant and big momma elephanty",
+   "present": true,
+   "n": 2
+  }
+ ]
+}

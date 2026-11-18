@@ -1,0 +1,844 @@
+{
+ "train_text": {
+  "refcoco": {
+   "n": 107859,
+   "words": {
+    "p10": 1.0,
+    "p50": 3.0,
+    "p90": 6.0
+   },
+   "le2_words": 0.36428114482796986,
+   "ge12_words": 0.006221084934961384,
+   "levels": {
+    "0_fragment": 0.2207233517833468,
+    "1_category_only": 0.11933172011607747,
+    "2_one_cue": 0.5004682038587415,
+    "3_two_cues": 0.14079492670987123,
+    "4_three_cues": 0.018681797531963026
+   },
+   "spatial": 0.6501172827487739,
+   "appearance": 0.3075311286030837,
+   "relation": 0.10260618029093539,
+   "function": 0.007917744462678126,
+   "spatial_only": 0.477308337737231
+  },
+  "refcocoplus": {
+   "n": 107376,
+   "words": {
+    "p10": 1.0,
+    "p50": 3.0,
+    "p90": 6.0
+   },
+   "le2_words": 0.3938310236924452,
+   "ge12_words": 0.0054760840411265084,
+   "levels": {
+    "0_fragment": 0.2642303680524512,
+    "1_category_only": 0.2325379973178364,
+    "2_one_cue": 0.36572418417523467,
+    "3_two_cues": 0.12622001192072715,
+    "4_three_cues": 0.011287438533750558
+   },
+   "spatial": 0.17342795410520043,
+   "appearance": 0.48225860527492176,
+   "relation": 0.2064614066458054,
+   "function": 0.009666964684845776,
+   "spatial_only": 0.09873714796602592
+  },
+  "refcocog": {
+   "n": 72369,
+   "words": {
+    "p10": 4.0,
+    "p50": 8.0,
+    "p90": 13.0
+   },
+   "le2_words": 0.02570161256891763,
+   "ge12_words": 0.1821498155287485,
+   "levels": {
+    "0_fragment": 0.07355359338943471,
+    "1_category_only": 0.11956777073056143,
+    "2_one_cue": 0.38776271608008955,
+    "3_two_cues": 0.3465848636847269,
+    "4_three_cues": 0.07253105611518744
+   },
+   "spatial": 0.3526509969738424,
+   "appearance": 0.560806422639528,
+   "relation": 0.46823916317760367,
+   "function": 0.00746175848775028,
+   "spatial_only": 0.1370061766778593
+  }
+ },
+ "targets_same_category_count": {
+  "n": 113701,
+  "eq1": 0.0,
+  "ge2": 1.0,
+  "ge4": 0.3987300023746493,
+  "dist": {
+   "p10": 2.0,
+   "p50": 3.0,
+   "p90": 10.0,
+   "p99": 13.0
+  }
+ },
+ "bare_category_positives": {
+  "n": 46493,
+  "share": 0.16165630519742424,
+  "examples": [
+   "donut that looks like backwards c",
+   "girl",
+   "batter",
+   "hot dog box",
+   "man kneeling",
+   "bowl of strawberries",
+   "a man in a neoprene wetsuit , surfing",
+   "the lady",
+   "vase by the boy",
+   "guy serving"
+  ]
+ },
+ "instance_coverage": {
+  "instances": 139854,
+  "referred": 58578,
+  "referred_share": 0.41885108756274403,
+  "images_with_partially_referred_category": 0.544229114598271,
+  "least_covered": [
+   [
+    "backpack",
+    0.111198738170347,
+    1268
+   ],
+   [
+    "handbag",
+    0.11732186732186732,
+    1628
+   ],
+   [
+    "knife",
+    0.14714714714714713,
+    666
+   ],
+   [
+    "tie",
+    0.14962962962962964,
+    675
+   ],
+   [
+    "bottle",
+    0.15841584158415842,
+    2222
+   ],
+   [
+    "spoon",
+    0.16142557651991615,
+    477
+   ],
+   [
+    "tennis racket",
+    0.16772554002541296,
+    787
+   ],
+   [
+    "skateboard",
+    0.17040358744394618,
+    669
+   ],
+   [
+    "cup",
+    0.19581422018348624,
+    3488
+   ],
+   [
+    "fork",
+    0.2049586776859504,
+    605
+   ],
+   [
+    "cell phone",
+    0.2113970588235294,
+    544
+   ],
+   [
+    "wine glass",
+    0.21428571428571427,
+    1428
+   ]
+  ],
+  "examples": [
+   {
+    "image_id": 131075,
+    "category": "tv",
+    "instances": 2,
+    "referred": 1
+   },
+   {
+    "image_id": 524297,
+    "category": "person",
+    "instances": 2,
+    "referred": 1
+   },
+   {
+    "image_id": 393228,
+    "category": "elephant",
+    "instances": 3,
+    "referred": 1
+   },
+   {
+    "image_id": 131093,
+    "category": "sheep",
+    "instances": 3,
+    "referred": 1
+   },
+   {
+    "image_id": 25,
+    "category": "giraffe",
+    "instances": 2,
+    "referred": 1
+   },
+   {
+    "image_id": 393241,
+    "category": "person",
+    "instances": 10,
+    "referred": 2
+   },
+   {
+    "image_id": 262171,
+    "category": "boat",
+    "instances": 2,
+    "referred": 1
+   },
+   {
+    "image_id": 524314,
+    "category": "car",
+    "instances": 3,
+    "referred": 2
+   }
+  ]
+ },
+ "train_negatives": {
+  "swap": {
+   "n": 71852,
+   "no_category_word": 0.15011412347603406,
+   "category_absent": 0.8010632967767076,
+   "same_category_in_image": 0.04882257974725825
+  },
+  "grefcoco": {
+   "n": 16994,
+   "same_category_in_image": 0.19489231493468284,
+   "no_category_word": 0.10539013769565729,
+   "category_absent": 0.6997175473696599
+  },
+  "all": {
+   "n": 88846,
+   "no_category_word": 0.14155955248407356,
+   "category_absent": 0.7816784098327443,
+   "same_category_in_image": 0.07676203768318214
+  }
+ },
+ "grefcoco": {
+  "by_split": {
+   "train": {
+    "single": 120624,
+    "no_target": 19140,
+    "multi": 69580
+   },
+   "val": {
+    "multi": 5324,
+    "no_target": 8905
+   },
+   "testA": {
+    "multi": 8835,
+    "single": 5917,
+    "no_target": 4448
+   },
+   "testB": {
+    "multi": 5744,
+    "single": 5646,
+    "no_target": 4673
+   }
+  },
+  "multi_n_targets": {
+   "2": 83041,
+   "3": 3740,
+   "4": 1248,
+   "5": 496,
+   "6": 958
+  }
+ },
+ "benchmarks": {
+  "grefcoco_testA": {
+   "n_q": 19200,
+   "n_img": 750,
+   "absent": 0.23166666666666666,
+   "multi": 0.46015625,
+   "text": {
+    "n": 14752,
+    "words": {
+     "p10": 2.0,
+     "p50": 5.0,
+     "p90": 12.0
+    },
+    "le2_words": 0.1957700650759219,
+    "ge12_words": 0.10920553145336226,
+    "levels": {
+     "0_fragment": 0.17224783080260303,
+     "1_category_only": 0.16838394793926248,
+     "2_one_cue": 0.37683026030368766,
+     "3_two_cues": 0.1957700650759219,
+     "4_three_cues": 0.08676789587852494
+    },
+    "spatial": 0.5593817787418656,
+    "appearance": 0.38299891540130154,
+    "relation": 0.21976681127982647,
+    "function": 0.0035249457700650758,
+    "spatial_only": 0.28531724511930584
+   },
+   "mentions_person": 0.29087581344902386
+  },
+  "grefcoco_testB": {
+   "n_q": 16063,
+   "n_img": 750,
+   "absent": 0.29091701425636557,
+   "multi": 0.35759198157255806,
+   "text": {
+    "n": 11390,
+    "words": {
+     "p10": 2.0,
+     "p50": 5.0,
+     "p90": 13.0
+    },
+    "le2_words": 0.17796312554872695,
+    "ge12_words": 0.12352941176470589,
+    "levels": {
+     "0_fragment": 0.18244073748902545,
+     "1_category_only": 0.1028972783143108,
+     "2_one_cue": 0.4971027216856892,
+     "3_two_cues": 0.18700614574187885,
+     "4_three_cues": 0.0305531167690957
+    },
+    "spatial": 0.7507462686567165,
+    "appearance": 0.28173836698858645,
+    "relation": 0.09692712906057946,
+    "function": 0.015013169446883232,
+    "spatial_only": 0.5182616330114135
+   },
+   "mentions_person": 0.03388937664618086
+  },
+  "grefcoco_val": {
+   "n_q": 14229,
+   "n_img": 1501,
+   "absent": 0.6258345632159674,
+   "multi": 0.37416543678403263,
+   "text": {
+    "n": 5324,
+    "words": {
+     "p10": 5.0,
+     "p50": 8.0,
+     "p90": 15.0
+    },
+    "le2_words": 0.014274981217129978,
+    "ge12_words": 0.2197595792637115,
+    "levels": {
+     "0_fragment": 0.05653643876784373,
+     "1_category_only": 0.07419233658903081,
+     "2_one_cue": 0.4160405709992487,
+     "3_two_cues": 0.3302028549962434,
+     "4_three_cues": 0.12302779864763336
+    },
+    "spatial": 0.7815552216378663,
+    "appearance": 0.48196844477836215,
+    "relation": 0.2503756574004508,
+    "function": 0.010706235912847483,
+    "spatial_only": 0.34372652141247184
+   },
+   "mentions_person": 0.0
+  },
+  "refcoco_testA": {
+   "n_q": 5657,
+   "n_img": 750,
+   "absent": 0.0,
+   "multi": 0.0,
+   "text": {
+    "n": 5657,
+    "words": {
+     "p10": 1.0,
+     "p50": 3.0,
+     "p90": 6.0
+    },
+    "le2_words": 0.3789994696835779,
+    "ge12_words": 0.006010252784161216,
+    "levels": {
+     "0_fragment": 0.20045960756584763,
+     "1_category_only": 0.16740321725296092,
+     "2_one_cue": 0.45677921159625245,
+     "3_two_cues": 0.15379176241824288,
+     "4_three_cues": 0.02156620116669613
+    },
+    "spatial": 0.5442814212480113,
+    "appearance": 0.34346826940074243,
+    "relation": 0.1316952448294149,
+    "function": 0.00265158211065936,
+    "spatial_only": 0.3666254198338342
+   },
+   "mentions_person": 0.7350185610747746
+  },
+  "refcoco_testB": {
+   "n_q": 5095,
+   "n_img": 750,
+   "absent": 0.0,
+   "multi": 0.0,
+   "text": {
+    "n": 5095,
+    "words": {
+     "p10": 2.0,
+     "p50": 3.0,
+     "p90": 6.0
+    },
+    "le2_words": 0.34563297350343475,
+    "ge12_words": 0.006673209028459273,
+    "levels": {
+     "0_fragment": 0.2392541707556428,
+     "1_category_only": 0.07026496565260058,
+     "2_one_cue": 0.5629048086359175,
+     "3_two_cues": 0.12011776251226693,
+     "4_three_cues": 0.00745829244357213
+    },
+    "spatial": 0.7964671246319921,
+    "appearance": 0.22433758586849853,
+    "relation": 0.04828263002944063,
+    "function": 0.015701668302257114,
+    "spatial_only": 0.64396467124632
+   },
+   "mentions_person": 0.01786064769381747
+  },
+  "refcoco_val": {
+   "n_q": 10834,
+   "n_img": 1500,
+   "absent": 0.0,
+   "multi": 0.0,
+   "text": {
+    "n": 10834,
+    "words": {
+     "p10": 2.0,
+     "p50": 3.0,
+     "p90": 6.0
+    },
+    "le2_words": 0.3601624515414436,
+    "ge12_words": 0.006553442865054458,
+    "levels": {
+     "0_fragment": 0.20943326564519107,
+     "1_category_only": 0.11242385083994831,
+     "2_one_cue": 0.5117223555473509,
+     "3_two_cues": 0.14860623961602362,
+     "4_three_cues": 0.017814288351486064
+    },
+    "spatial": 0.6607901052242939,
+    "appearance": 0.30773490862100794,
+    "relation": 0.10180911943880376,
+    "function": 0.006553442865054458,
+    "spatial_only": 0.4846778659774783
+   },
+   "mentions_person": 0.4181281151929112
+  },
+  "refcocog_test": {
+   "n_q": 9602,
+   "n_img": 2600,
+   "absent": 0.0,
+   "multi": 0.0,
+   "text": {
+    "n": 9602,
+    "words": {
+     "p10": 4.0,
+     "p50": 8.0,
+     "p90": 13.0
+    },
+    "le2_words": 0.026348677358883566,
+    "ge12_words": 0.17673401374713602,
+    "levels": {
+     "0_fragment": 0.07706727765048949,
+     "1_category_only": 0.11455946677775464,
+     "2_one_cue": 0.39408456571547595,
+     "3_two_cues": 0.3424286606956884,
+     "4_three_cues": 0.07186002916059155
+    },
+    "spatial": 0.3629452197458863,
+    "appearance": 0.5524890647781712,
+    "relation": 0.4613622162049573,
+    "function": 0.006040408248281608,
+    "spatial_only": 0.14580295771714227
+   },
+   "mentions_person": 0.4209539679233493
+  },
+  "refcocog_val": {
+   "n_q": 4896,
+   "n_img": 1300,
+   "absent": 0.0,
+   "multi": 0.0,
+   "text": {
+    "n": 4896,
+    "words": {
+     "p10": 4.0,
+     "p50": 8.0,
+     "p90": 13.0
+    },
+    "le2_words": 0.024305555555555556,
+    "ge12_words": 0.1801470588235294,
+    "levels": {
+     "0_fragment": 0.0718954248366013,
+     "1_category_only": 0.11519607843137254,
+     "2_one_cue": 0.3917483660130719,
+     "3_two_cues": 0.35049019607843135,
+     "4_three_cues": 0.07066993464052287
+    },
+    "spatial": 0.36764705882352944,
+    "appearance": 0.5635212418300654,
+    "relation": 0.4548611111111111,
+    "function": 0.005923202614379085,
+    "spatial_only": 0.13909313725490197
+   },
+   "mentions_person": 0.41687091503267976
+  },
+  "refcocoplus_testA": {
+   "n_q": 5726,
+   "n_img": 750,
+   "absent": 0.0,
+   "multi": 0.0,
+   "text": {
+    "n": 5726,
+    "words": {
+     "p10": 1.0,
+     "p50": 3.0,
+     "p90": 6.0
+    },
+    "le2_words": 0.4097100943066713,
+    "ge12_words": 0.003318197694725812,
+    "levels": {
+     "0_fragment": 0.2869367796018163,
+     "1_category_only": 0.23559203632553266,
+     "2_one_cue": 0.34002794271742925,
+     "3_two_cues": 0.12818721620677612,
+     "4_three_cues": 0.009256025148445686
+    },
+    "spatial": 0.10338805448829899,
+    "appearance": 0.5324834090115264,
+    "relation": 0.22843171498428222,
+    "function": 0.004715333566189312,
+    "spatial_only": 0.049423681453021305
+   },
+   "mentions_person": 0.6302829200139713
+  },
+  "refcocoplus_testB": {
+   "n_q": 4889,
+   "n_img": 750,
+   "absent": 0.0,
+   "multi": 0.0,
+   "text": {
+    "n": 4889,
+    "words": {
+     "p10": 2.0,
+     "p50": 3.0,
+     "p90": 7.0
+    },
+    "le2_words": 0.36101452239721826,
+    "ge12_words": 0.0040908161178155045,
+    "levels": {
+     "0_fragment": 0.2366537124156269,
+     "1_category_only": 0.2415626917570055,
+     "2_one_cue": 0.40867253016976884,
+     "3_two_cues": 0.10431581100429535,
+     "4_three_cues": 0.008795254653303334
+    },
+    "spatial": 0.26283493556964616,
+    "appearance": 0.38515033749232974,
+    "relation": 0.16035999181836777,
+    "function": 0.01534056044180814,
+    "spatial_only": 0.1748823890366128
+   },
+   "mentions_person": 0.024953978318674574
+  },
+  "refcocoplus_val": {
+   "n_q": 10758,
+   "n_img": 1500,
+   "absent": 0.0,
+   "multi": 0.0,
+   "text": {
+    "n": 10758,
+    "words": {
+     "p10": 1.0,
+     "p50": 3.0,
+     "p90": 6.0
+    },
+    "le2_words": 0.38910578174381855,
+    "ge12_words": 0.005391336679680238,
+    "levels": {
+     "0_fragment": 0.26017847183491355,
+     "1_category_only": 0.22522773749767616,
+     "2_one_cue": 0.3714445064138316,
+     "3_two_cues": 0.13143707008737684,
+     "4_three_cues": 0.011712214166201896
+    },
+    "spatial": 0.1784718349135527,
+    "appearance": 0.4920059490611638,
+    "relation": 0.2105409927495817,
+    "function": 0.008923591745677636,
+    "spatial_only": 0.10187767242981967
+   },
+   "mentions_person": 0.3703290574456219
+  },
+  "_image_overlap": {
+   "grefcoco_testA&grefcoco_val": 1,
+   "grefcoco_testA&refcoco_testA": 750,
+   "grefcoco_testA&refcocog_test": 47,
+   "grefcoco_testA&refcocog_val": 22,
+   "grefcoco_testA&refcocoplus_testA": 750,
+   "grefcoco_testB&refcoco_testB": 750,
+   "grefcoco_testB&refcocog_test": 71,
+   "grefcoco_testB&refcocog_val": 26,
+   "grefcoco_testB&refcocoplus_testB": 750,
+   "grefcoco_val&refcoco_testA": 1,
+   "grefcoco_val&refcoco_val": 1500,
+   "grefcoco_val&refcocog_test": 123,
+   "grefcoco_val&refcocog_val": 62,
+   "grefcoco_val&refcocoplus_testA": 1,
+   "grefcoco_val&refcocoplus_val": 1500,
+   "refcoco_testA&refcocog_test": 47,
+   "refcoco_testA&refcocog_val": 22,
+   "refcoco_testA&refcocoplus_testA": 750,
+   "refcoco_testB&refcocog_test": 71,
+   "refcoco_testB&refcocog_val": 26,
+   "refcoco_testB&refcocoplus_testB": 750,
+   "refcoco_val&refcocog_test": 123,
+   "refcoco_val&refcocog_val": 62,
+   "refcoco_val&refcocoplus_val": 1500,
+   "refcocog_test&refcocoplus_testA": 47,
+   "refcocog_test&refcocoplus_testB": 71,
+   "refcocog_test&refcocoplus_val": 123,
+   "refcocog_val&refcocoplus_testA": 22,
+   "refcocog_val&refcocoplus_testB": 26,
+   "refcocog_val&refcocoplus_val": 62
+  }
+ },
+ "train_category_share_top": [
+  [
+   "person",
+   0.4794057106298939
+  ],
+  [
+   "chair",
+   0.024853618169427407
+  ],
+  [
+   "giraffe",
+   0.022298020889834635
+  ],
+  [
+   "zebra",
+   0.021595666263334305
+  ],
+  [
+   "elephant",
+   0.02056995034839571
+  ],
+  [
+   "bowl",
+   0.019791101653662675
+  ],
+  [
+   "horse",
+   0.01756929667181263
+  ],
+  [
+   "pizza",
+   0.01598726026063615
+  ],
+  [
+   "couch",
+   0.015768209065242487
+  ],
+  [
+   "cow",
+   0.015330106674455153
+  ]
+ ],
+ "train_categories_covered": 78,
+ "examples": {
+  "refcoco:2_one_cue": [
+   "front chair",
+   "player on right",
+   "player on right",
+   "bike wheel farthest right",
+   "right remote",
+   "very top center broccoli"
+  ],
+  "refcoco:0_fragment": [
+   "black skii outfit",
+   "green shirt",
+   "middle left",
+   "animal most towards us",
+   "blue bkie bottom",
+   "open trunk"
+  ],
+  "refcoco:1_category_only": [
+   "girl",
+   "guy on phone",
+   "tennis player",
+   "laptop screen",
+   "train",
+   "bowl of meat"
+  ],
+  "refcoco:3_two_cues": [
+   "man background looking to the right",
+   "third glass from left",
+   "woman with pink shirt",
+   "left blue ski pants",
+   "second glass from left",
+   "right red truck"
+  ],
+  "refcoco:4_three_cues": [
+   "guy on right red shirt blue shorts just standing there",
+   "person on the right wearing black",
+   "lady front with glasses",
+   "kid with hand up near his hair",
+   "man standing on right with beard",
+   "pink frosting car with two candles on left"
+  ],
+  "refcocoplus:2_one_cue": [
+   "sandwich more white stuff",
+   "boy with hands clamped",
+   "red shirt no glasses",
+   "guy with one eye closed",
+   "man in white who is jumping",
+   "closest donut"
+  ],
+  "refcocoplus:0_fragment": [
+   "white hair",
+   "cloest cut off motoercycle",
+   "carrrot 2",
+   "white shirt",
+   "headless dad",
+   "urinal after urinal near wall"
+  ],
+  "refcocoplus:1_category_only": [
+   "ugly whiteish couch",
+   "powered donut close to you",
+   "baby",
+   "oven door",
+   "obscured zebra that you can see its head",
+   "baby"
+  ],
+  "refcocoplus:3_two_cues": [
+   "guy white shirt under blue virtical sign",
+   "kid with black hair",
+   "black area behind computer",
+   "woman behind sitting sculpture",
+   "woman with dark brown hair",
+   "dude actively running with red shirt"
+  ],
+  "refcocoplus:4_three_cues": [
+   "white sheep laying down closest to wall",
+   "little boy furthest away eating pizza",
+   "person sitting behind dude with tie",
+   "little kid with back turned"
+  ],
+  "refcocog:1_category_only": [
+   "the truck is parked in the space",
+   "bus 94 to piccadilly",
+   "a catcher waiting for the ball",
+   "woman",
+   "an infant being held by a woman",
+   "jumbo jet"
+  ],
+  "refcocog:2_one_cue": [
+   "man with bat",
+   "green and white eva airplane",
+   "the elephant ' s but on the left in the right hand picture",
+   "a woman watching two men play video games",
+   "a white car in the street",
+   "a clear bowl of bright red sliced strawberries"
+  ],
+  "refcocog:3_two_cues": [
+   "a green suitcase with two other luggage pieces stacked atop it",
+   "a potted plant sitting to the left of a bench",
+   "a dark skinned women with braids in a tan outfit",
+   "the bike with the red container",
+   "clear wine glass with white wine",
+   "the blue and yellow train , on the second track"
+  ],
+  "refcocog:4_three_cues": [
+   "girl wearing black leggings and gray tank top",
+   "large piece of brocolli with no top at bottom of bowl",
+   "a black and white cow standing closest to the fence",
+   "an orange motorcycle with the number 28 on the back",
+   "the gentleman in the foreground wearing a green sweater and black slacks that it holding out the nunchuk for his wii remote",
+   "skateboarder on the left with red hair"
+  ],
+  "refcocog:0_fragment": [
+   "a red color skating pad kept on a snow field",
+   "a striped shirt",
+   "the black gps",
+   "the blanket underneath the window",
+   "black range rover",
+   "the closest animal"
+  ],
+  "neg:swap:no_category_word": [
+   "right blurry arm",
+   "pink flowery package with no letters on it",
+   "top right corner of photo",
+   "cutoff frame legs",
+   "red shirt on right",
+   "yellow stuff bottom touching rice"
+  ],
+  "neg:swap:category_absent": [
+   "book with white cover upside down",
+   "girl in white",
+   "lady with longer hair",
+   "a woman in a blue uniform swinging a bat",
+   "multicolor kite at top right",
+   "white shirt lady"
+  ],
+  "neg:grefcoco:same_category_in_image": [
+   "bus player",
+   "left whole zebra in pizza",
+   "woman skiing",
+   "woman in striped elephant",
+   "screen closest to you or on the center car",
+   "person with umbrella green front"
+  ],
+  "neg:grefcoco:no_category_word": [
+   "ox in middle",
+   "brown mat under cocktails in middle left photo",
+   "pc on right",
+   "blurry one inn background",
+   "keyborad on top",
+   "hands on left"
+  ],
+  "neg:swap:same_category_in_image": [
+   "boat guy is on",
+   "child holding a stuffed bear and a long sword",
+   "a baby giraffe eating tree leaves along with other giraffes",
+   "blue table the children are dining at",
+   "person at table near us to left",
+   "the adult giraffe is walking"
+  ],
+  "neg:grefcoco:category_absent": [
+   "boat front and center",
+   "wine glass on right",
+   "big elephant with wine glass",
+   "cup",
+   "frontmost dog",
+   "front wheel of motorcycle"
+  ],
+  "multi": [
+   "man on left and woman cutting the cake  (targets=2)",
+   "boy on right side facing us and boy with hat left, near center of picture  (targets=2)",
+   "relax bottle and the velvet devil  (targets=2)",
+   "all  buses   (targets=3)",
+   "everyone sitting down.  (targets=4)",
+   "a guy in white shirt and a woman sitting  (targets=2)",
+   "person standing and person in front sitting  (targets=2)",
+   "bear on left side and bear bottom  (targets=2)",
+   "red shirt guy and woman looking up  (targets=2)",
+   "both trucks   (targets=2)",
+   "woman sitting on right and thing on very left of picture white  (targets=2)",
+   "guy on knees and black shirt batter  (targets=2)"
+  ]
+ }
+}

@@ -1,0 +1,35 @@
+[project]
+name = "glance-data"
+version = "0.1.0"
+description = "Grounding data diagnosis, augmentation and validation for Jev-style box models"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.24",
+  "pandas>=2.0",
+  "pyarrow>=14",
+  "pillow>=10",
+]
+
+[project.optional-dependencies]
+# eval/model_rows.py and eval/diagnose.py run a vlm-jev checkpoint; install in the vlm-jev environment instead
+eval = ["torch>=2.4"]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["glance_data*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E401", "E501", "E701", "E702", "E731"]  # long prompt strings; keep code lines ~120
