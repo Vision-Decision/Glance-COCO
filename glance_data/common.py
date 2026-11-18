@@ -2,7 +2,7 @@
 
 Paths come from environment variables (see .env.example):
   JEV_DATA      raw sources (default ~/experiments/jevbox_20261117/data)
-  JEV_PREP      the vlm-jev prepared records: train.jsonl, eval_*.jsonl (default ~/experiments/jevbox_20261117/v2/data/prep)
+  JEV_PREP      the prepared records: train.jsonl, eval_*.jsonl (default ~/experiments/jevbox_20261117/v2/data/prep)
   GLANCE_OUT    where this pipeline writes (default ./out)
 
 Sources under JEV_DATA:

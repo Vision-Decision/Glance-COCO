@@ -3,13 +3,13 @@ OUT ?= out
 PY ?= python
 WORKERS ?= 32
 
-.PHONY: help test lint analyze inventory generate assemble compare pipeline diag-set
+.PHONY: help test lint analyze inventory generate assemble compare pipeline diag-set audit
 
 help:
 	@echo "make test | lint"
 	@echo "make analyze                       # diagnose current data + benchmarks -> $(OUT)/analysis.json"
 	@echo "make pipeline SPLIT=train          # inventory -> generate -> assemble -> compare"
-	@echo "make diag-set                      # 300 held-out val images -> $(OUT)/aug_val.jsonl"
+	@echo "make diag-set                      # 300 held-out val images -> $(OUT)/aug_refcoco_val.jsonl"
 
 test:
 	$(PY) -m pytest -q
@@ -38,3 +38,6 @@ pipeline: inventory generate assemble compare
 
 diag-set:
 	$(MAKE) inventory generate assemble SPLIT=refcoco_val LIMIT=300
+
+audit:
+	$(PY) -m glance_data.audit sample --aug $(OUT)/aug_$(SPLIT).jsonl --inv $(OUT)/inv_$(SPLIT) --out $(OUT)/audit_$(SPLIT)
