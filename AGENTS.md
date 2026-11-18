@@ -31,6 +31,7 @@ glance_data/
   export_hf.py   records -> Parquet shards for the Hugging Face dataset (no images)
 hf/DATASET_CARD.md  the dataset card published as README.md on the Hub
 tests/           unit tests for the rule-based logic (no data, no network)
+assets/          logo (light/dark) and README artwork
 docs/RESULTS.md  findings and audit numbers; docs/results/*.json raw summaries
 ```
 
@@ -39,6 +40,7 @@ docs/RESULTS.md  findings and audit numbers; docs/results/*.json raw summaries
 ```bash
 uv venv && uv pip install -e ".[dev]"     # or: pip install -e ".[dev]"
 cp .env.example .env && set -a && source .env && set +a
+pre-commit install                         # ruff + hygiene hooks on every commit
 make test
 ```
 

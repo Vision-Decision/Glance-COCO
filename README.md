@@ -1,46 +1,87 @@
-# Glance-Data
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+    <img src="assets/logo-light.svg" width="88" alt="Glance-Data">
+  </picture>
+</p>
 
-这是 Jev 风格 grounding 任务的**数据仓库**，只管数据。任务形式是：一张图配多条文字需求，每条需求的答案是一个框、多个框，或者“图里没有”。
+<h1 align="center">Glance-Data</h1>
 
-- **诊断**：找出现有数据（RefCOCO / RefCOCO+ / RefCOCOg / gRefCOCO）和 benchmark 的问题；
-- **增强**：生成新数据。目标框、数量、某类是否存在都由 COCO 标注精确决定，DeepSeek 看图只负责写句子；
-- **验证**：用规则过滤，再做分层人工抽查，检查标签是否正确；
-- **产出**：增强后的训练数据，以及一份留出图片上的诊断集，供模型仓库使用。
+<p align="center">
+  <b>精确的框，丰富的说法。</b><br>
+  一张图、多条文字需求的 grounding 数据
+</p>
 
-模型、训练和评测都不在这个仓库里。
+<p align="center">
+  <a href="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml"><img src="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://huggingface.co/datasets/Vision-Decision/Glance-Data"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20dataset-Glance--Data-FFD21E" alt="Hugging Face dataset"></a>
+  <img src="https://img.shields.io/badge/python-3.10%2B-3776AB" alt="Python 3.10+">
+  <img src="https://img.shields.io/badge/data-CC%20BY--NC%204.0-lightgrey" alt="Data license: CC BY-NC 4.0">
+</p>
 
-数据集已发布在 Hugging Face：[Vision-Decision/Glance-Data](https://huggingface.co/datasets/Vision-Decision/Glance-Data)（私有，不含图片，CC BY-NC 4.0）。
+<p align="center">
+  <img src="assets/example.jpg" width="680" alt="牧场上的牛群：橙色框标出站着吃草的大牛，两个蓝色框标出左边躺着的两头牛">
+</p>
 
-## Pipeline
+<p align="center">
+  <sub><b>1</b> 站着吃干草的那头大牛 → 1 个框　·　<b>2</b> 左边一起躺着的两头牛 → 2 个框　·　<b>3</b> 一匹马 → 没有</sub>
+</p>
 
+---
+
+Glance-Data 在 RefCOCO 系列数据的基础上，补齐原数据缺少的说法：
+
+- **说法更多**：同一个目标有短 / 中 / 长、口语、中文几种描述，也可以只说类别名，或者要“全部”。
+- **会答“没有”**：同类在、但细节不对的难负例，例如牛都是白棕色的，却问“黑色的牛”；还有数量、位置和相近类别的负例。
+- **会给多个框**：一句话对应好几个目标，或者按用途描述，例如“能坐的东西”。
+
+框、数量、某类是否存在都直接取自 COCO 标注，大模型只负责写句子。
+
+## 数据集
+
+| split | 图片 | 题目 | 来源 |
+|---|---:|---:|---|
+| `train` | 24,406 | 1,831,146 | RefCOCO 系列训练图，已移除所有评测图片 |
+| `diagnostic` | 300 | 23,578 | `refcoco_val` 留出图片，从未用于训练 |
+
+```python
+from datasets import load_dataset
+
+ds = load_dataset("Vision-Decision/Glance-Data")
+for q in ds["train"][0]["questions"][:3]:
+    print(q["kind"], q["text"], q["boxes"])
 ```
-图片 + 已有标注 ──► ① inventory（规则）──► ② generate（DeepSeek 看图，每图 1 次）──► ③ assemble（规则）──► 增强数据
-   COCO 物体框          合并标注，挑出物体编号        短/中/长、口语、中文、               过滤 + 按标注造题
-   已有人工描述                                     细节不对的负例、多目标、按用途        （类别名、全部、数量、位置、相近类别）
+
+每一行是一张图，`questions` 里的每条题带有 `text`、`lang`、`kind`、`present` 和 `boxes`。图片来自 COCO 2014，不随数据集分发。
+
+## 怎么做的
+
+```mermaid
+flowchart LR
+    A["图片 + COCO 标注<br/>已有人工描述"] --> B["① inventory<br/>整理物体清单"]
+    B --> C["② generate<br/>DeepSeek 看图写句子"]
+    C --> D["③ assemble<br/>规则过滤 · 按标注造题"]
+    A -. "框 · 数量 · 是否存在" .-> D
+    D --> E[("Glance-Data")]
 ```
 
-产出的题型：
-- **正例**：短 / 中 / 长描述、口语、中文、只说类别名、全部实例、多个目标、按用途描述。
-- **负例**：颜色等细节不对、动作不对、数量不对、位置不对、相近类别。
-
-平均每张图约 75 题，DeepSeek 费用约 0.005 元 / 图（全部 24,406 张训练图约 122 元，约 70 分钟）。
+分层人工抽查 112 条，**约 90% 正确**；同类难负例 16/16 全部正确。
 
 ## 快速开始
 
 ```bash
 uv venv && uv pip install -e ".[dev]"
-cp .env.example .env && set -a && source .env && set +a   # 填好数据路径和 key 文件路径
-make test
-make analyze                       # 诊断现有数据
-make pipeline SPLIT=train          # 增强全部训练图
-make diag-set                      # 300 张留出图片的诊断集
-make audit SPLIT=train             # 分层抽样出图，人工判断后用 audit score 汇总
+cp .env.example .env            # 数据路径和 API key 文件的位置
+make pipeline SPLIT=train       # inventory → generate → assemble → compare
 ```
 
-数据格式、设计约束、验证流程和服务器使用约定见 [AGENTS.md](AGENTS.md)，结果见 [docs/RESULTS.md](docs/RESULTS.md)。
+| 目录 | 内容 |
+|---|---|
+| `glance_data/` | 每个阶段一个模块，都可以断点续跑 |
+| `tests/` | 规则部分的单元测试 |
+| `docs/` | 数据诊断和验证结果 |
+| `AGENTS.md` | 数据格式、设计约束、验证流程 |
 
-## 结果摘要
+## 许可
 
-- **现有数据的缺口**：每个目标都有同类干扰物，所以从没出现过“只说类别名”“全部”这类说法；负例大多是图里根本没有的类别；6.9 万条多目标描述没有使用；只有英文。
-- **标签正确率**：按题型分层人工抽查 112 条，101 条正确（约 90%）。
-- **全量增强**：24,406 张训练图新增 183 万题（原有 35.5 万）。其中多目标题 27.4 万、中文题 88.6 万；同类难负例占全部负例的比例从 7.7% 提高到 77%。详见 [docs/RESULTS.md](docs/RESULTS.md)。
+数据集采用 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)，因为其中包含仅限非商业用途的 gRefCOCO。COCO 标注为 CC BY 4.0。示例图片来自 COCO（[Flickr](http://farm7.staticflickr.com/6214/6266504428_369fe0f165_z.jpg)，CC BY 2.0），框是我们加上的。

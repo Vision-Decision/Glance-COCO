@@ -9,9 +9,10 @@ out/
 *key*
 !.env.example
 
-# images rendered for audits / slides
+# images rendered for audits / slides (repo artwork lives in assets/)
 *.jpg
 *.png
+!assets/*
 
 # python
 __pycache__/

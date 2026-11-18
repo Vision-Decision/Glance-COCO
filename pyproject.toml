@@ -4,6 +4,13 @@ version = "0.1.0"
 description = "Grounding data: diagnosis, augmentation and validation (data only)"
 readme = "README.md"
 requires-python = ">=3.10"
+authors = [{ name = "Vision-Decision" }]
+keywords = ["visual-grounding", "referring-expressions", "refcoco", "coco", "dataset", "hard-negatives"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Intended Audience :: Science/Research",
+]
 dependencies = [
   "numpy>=1.24",
   "pandas>=2.0",
@@ -12,7 +19,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.6"]
+dev = ["pytest>=8", "ruff>=0.6", "pre-commit>=3"]
+
+[project.urls]
+Homepage = "https://github.com/Vision-Decision/Glance-Data"
+Dataset = "https://huggingface.co/datasets/Vision-Decision/Glance-Data"
 
 [build-system]
 requires = ["setuptools>=68"]
