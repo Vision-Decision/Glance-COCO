@@ -1,5 +1,5 @@
 ---
-license: cc-by-nc-4.0
+license: cc-by-nc-sa-4.0
 language:
 - en
 - zh
@@ -108,8 +108,10 @@ Images come from COCO 2014 train (`file`). A model with a single-box head can us
 ## License and sources
 
 - Images: COCO (not redistributed here); COCO annotations are CC BY 4.0.
-- Referring expressions: RefCOCO / RefCOCO+ / RefCOCOg (research use) and gRefCOCO (**non-commercial**). Because of
-  gRefCOCO, the dataset as a whole is released under CC BY-NC 4.0.
+- Referring expressions: RefCOCO / RefCOCO+ / RefCOCOg (research use) and gRefCOCO, which is CC BY-NC-SA 4.0 and
+  released for non-commercial research purposes only. Its ShareAlike clause carries over, so this dataset is released
+  under **CC BY-NC-SA 4.0, for non-commercial research only**.
+- Please cite gRefCOCO (GRES, CVPR 2023), RefCOCO / RefCOCO+ / RefCOCOg and COCO when using the data.
 - Generated text: written by DeepSeek (deepseek-flash) from the images.
 
 Pipeline code: `Vision-Decision/Glance-Data` on GitHub.

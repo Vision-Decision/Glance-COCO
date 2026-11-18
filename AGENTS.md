@@ -62,8 +62,8 @@ after an interruption. Run long jobs in a dedicated tmux session named `glance-*
 
 ## Publishing (Hugging Face)
 
-The dataset is `Vision-Decision/Glance-Data` on the Hub. It is **private**, licensed CC BY-NC 4.0 because it contains
-gRefCOCO, and contains no images. To publish a new version:
+The dataset is `Vision-Decision/Glance-Data` on the Hub. It is **private**, licensed CC BY-NC-SA 4.0 (non-commercial
+research only; gRefCOCO's ShareAlike terms carry over, see `LICENSE-DATA.md`), and contains no images. To publish a new version:
 
 ```bash
 python -m glance_data.export_hf --src out/aug_train_all.jsonl --split train --out hf_repo/data
@@ -151,4 +151,6 @@ in `docs/results/`. Commit messages are imperative and short, with a body that e
 - Short descriptions are sometimes not unique (6/8 in the audit), e.g. "green tie" when there are two green ties.
 - COCO misses some objects, so a rule-made negative such as "a toaster" can be wrong when the object is present but
   unannotated (near-category negatives: 7/8 in the audit).
-- gRefCOCO is licensed for non-commercial use only. Check this before using `gref_multi` items commercially.
+- Licensing: code is Apache-2.0; all data is CC BY-NC-SA 4.0 for non-commercial research only (gRefCOCO is
+  CC BY-NC-SA 4.0 and its ShareAlike clause carries over). Do not relicense data or add sources with stricter terms
+  without updating `LICENSE-DATA.md`.

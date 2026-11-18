@@ -4,12 +4,14 @@ version = "0.1.0"
 description = "Grounding data: diagnosis, augmentation and validation (data only)"
 readme = "README.md"
 requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
 authors = [{ name = "Vision-Decision" }]
 keywords = ["visual-grounding", "referring-expressions", "refcoco", "coco", "dataset", "hard-negatives"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
   "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
 ]
 dependencies = [
   "numpy>=1.24",

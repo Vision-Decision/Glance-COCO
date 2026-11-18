@@ -13,10 +13,11 @@
 </p>
 
 <p align="center">
+  <a href="https://huggingface.co/datasets/Vision-Decision/Glance-Data"><img src="https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?logo=huggingface&logoColor=000" alt="Hugging Face dataset"></a>
   <a href="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml"><img src="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://huggingface.co/datasets/Vision-Decision/Glance-Data"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20dataset-Glance--Data-FFD21E" alt="Hugging Face dataset"></a>
-  <img src="https://img.shields.io/badge/python-3.10%2B-3776AB" alt="Python 3.10+">
-  <img src="https://img.shields.io/badge/data-CC%20BY--NC%204.0-lightgrey" alt="Data license: CC BY-NC 4.0">
+  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/Code-Apache%202.0-2F80ED?logo=apache&logoColor=white" alt="Code license: Apache-2.0"></a>
+  <a href="LICENSE-DATA.md"><img src="https://img.shields.io/badge/Data-CC%20BY--NC--SA%204.0-6B7280?logo=creativecommons&logoColor=white" alt="Data license: CC BY-NC-SA 4.0"></a>
 </p>
 
 <p align="center">
@@ -84,4 +85,4 @@ make pipeline SPLIT=train       # inventory → generate → assemble → compar
 
 ## 许可
 
-数据集采用 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)，因为其中包含仅限非商业用途的 gRefCOCO。COCO 标注为 CC BY 4.0。示例图片来自 COCO（[Flickr](http://farm7.staticflickr.com/6214/6266504428_369fe0f165_z.jpg)，CC BY 2.0），框是我们加上的。
+代码采用 [Apache-2.0](LICENSE)。数据采用 [CC BY-NC-SA 4.0](LICENSE-DATA.md)，**仅限非商业研究**，与原数据 gRefCOCO 的协议保持一致；包括 HF 数据集、pipeline 的产出和 `docs/results/`。各来源的协议和引用见 [LICENSE-DATA.md](LICENSE-DATA.md)。示例图片来自 COCO（[Flickr](http://farm7.staticflickr.com/6214/6266504428_369fe0f165_z.jpg)，CC BY 2.0），框是我们加上的。
