@@ -7,9 +7,11 @@
 
 <h1 align="center">Glance-Data</h1>
 
+<p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a></p>
+
 <p align="center">
-  <b>精确的框，丰富的说法。</b><br>
-  一张图、多条文字需求的 grounding 数据
+  <b>Exact boxes. Many ways to ask.</b><br>
+  Grounding data for one image and many text requests
 </p>
 
 <p align="center">
@@ -21,29 +23,32 @@
 </p>
 
 <p align="center">
-  <img src="assets/example.jpg" width="680" alt="牧场上的牛群：橙色框标出站着吃草的大牛，两个蓝色框标出左边躺着的两头牛">
+  <img src="assets/example.jpg" width="680" alt="Cows on a farm: an orange box marks the large grazing cow, two blue boxes mark the two cows lying on the left">
 </p>
 
 <p align="center">
-  <sub><b>1</b> 站着吃干草的那头大牛 → 1 个框　·　<b>2</b> 左边一起躺着的两头牛 → 2 个框　·　<b>3</b> 一匹马 → 没有</sub>
+  <sub><b>1</b> the big cow eating hay → 1 box　·　<b>2</b> the two cows lying together on the left → 2 boxes　·　<b>3</b> a horse → not present</sub>
 </p>
 
 ---
 
-Glance-Data 在 RefCOCO 系列数据的基础上，补齐原数据缺少的说法：
+Glance-Data extends the RefCOCO family with the requests that data is missing:
 
-- **说法更多**：同一个目标有短 / 中 / 长、口语、中文几种描述，也可以只说类别名，或者要“全部”。
-- **会答“没有”**：同类在、但细节不对的难负例，例如牛都是白棕色的，却问“黑色的牛”；还有数量、位置和相近类别的负例。
-- **会给多个框**：一句话对应好几个目标，或者按用途描述，例如“能坐的东西”。
+- **More ways to ask.** Each target gets short, medium and long descriptions, casual phrasing and Chinese, plus
+  category-only ("the tie") and all-instance ("all the zebras") requests.
+- **Saying "not present".** Hard negatives keep the category but get a detail wrong, such as "a black cow" when every
+  cow is white and brown. There are also count, position and near-category negatives.
+- **Several boxes at once.** Multi-target requests, and descriptions by use ("something to sit on").
 
-框、数量、某类是否存在都直接取自 COCO 标注，大模型只负责写句子。
+Boxes, counts and whether a category is present all come straight from COCO annotations. The LLM only writes the
+wording.
 
-## 数据集
+## Dataset
 
-| split | 图片 | 题目 | 来源 |
+| split | images | questions | from |
 |---|---:|---:|---|
-| `train` | 24,406 | 1,831,146 | RefCOCO 系列训练图，已移除所有评测图片 |
-| `diagnostic` | 300 | 23,578 | `refcoco_val` 留出图片，从未用于训练 |
+| `train` | 24,406 | 1,831,146 | RefCOCO-family training images, with every benchmark image removed |
+| `diagnostic` | 300 | 23,578 | held-out `refcoco_val` images, never used for training |
 
 ```python
 from datasets import load_dataset
@@ -53,36 +58,41 @@ for q in ds["train"][0]["questions"][:3]:
     print(q["kind"], q["text"], q["boxes"])
 ```
 
-每一行是一张图，`questions` 里的每条题带有 `text`、`lang`、`kind`、`present` 和 `boxes`。图片来自 COCO 2014，不随数据集分发。
+Each row is one image. Each question has `text`, `lang`, `kind`, `present` and `boxes`. The images are COCO 2014 and
+are not redistributed.
 
-## 怎么做的
+## How it works
 
 ```mermaid
 flowchart LR
-    A["图片 + COCO 标注<br/>已有人工描述"] --> B["① inventory<br/>整理物体清单"]
-    B --> C["② generate<br/>DeepSeek 看图写句子"]
-    C --> D["③ assemble<br/>规则过滤 · 按标注造题"]
-    A -. "框 · 数量 · 是否存在" .-> D
+    A["Images + COCO annotations<br/>existing human descriptions"] --> B["① inventory<br/>objects per image"]
+    B --> C["② generate<br/>DeepSeek writes the wording"]
+    C --> D["③ assemble<br/>rule filters · rule-made queries"]
+    A -. "boxes · counts · presence" .-> D
     D --> E[("Glance-Data")]
 ```
 
-分层人工抽查 112 条，**约 90% 正确**；同类难负例 16/16 全部正确。
+In a stratified human audit, about 90% of 112 sampled labels were correct, and all 16 hard negatives were correct.
 
-## 快速开始
+## Quickstart
 
 ```bash
 uv venv && uv pip install -e ".[dev]"
-cp .env.example .env            # 数据路径和 API key 文件的位置
+cp .env.example .env            # data paths and the API key file
 make pipeline SPLIT=train       # inventory → generate → assemble → compare
 ```
 
-| 目录 | 内容 |
+| path | what |
 |---|---|
-| `glance_data/` | 每个阶段一个模块，都可以断点续跑 |
-| `tests/` | 规则部分的单元测试 |
-| `docs/` | 数据诊断和验证结果 |
-| `AGENTS.md` | 数据格式、设计约束、验证流程 |
+| `glance_data/` | one resumable module per stage |
+| `tests/` | unit tests for the rule-based logic |
+| `docs/` | data diagnosis and validation results |
+| `AGENTS.md` | record schema, design rules, validation protocol |
 
-## 许可
+## License
 
-代码采用 [Apache-2.0](LICENSE)。数据采用 [CC BY-NC-SA 4.0](LICENSE-DATA.md)，**仅限非商业研究**，与原数据 gRefCOCO 的协议保持一致；包括 HF 数据集、pipeline 的产出和 `docs/results/`。各来源的协议和引用见 [LICENSE-DATA.md](LICENSE-DATA.md)。示例图片来自 COCO（[Flickr](http://farm7.staticflickr.com/6214/6266504428_369fe0f165_z.jpg)，CC BY 2.0），框是我们加上的。
+The code is licensed under [Apache-2.0](LICENSE). The data is licensed under [CC BY-NC-SA 4.0](LICENSE-DATA.md), for
+**non-commercial research only**, which follows the terms of the gRefCOCO source data. "Data" covers the Hugging Face
+dataset, everything the pipeline produces, and `docs/results/`. Source terms and citations are in
+[LICENSE-DATA.md](LICENSE-DATA.md). The example image is from COCO
+([Flickr](http://farm7.staticflickr.com/6214/6266504428_369fe0f165_z.jpg), CC BY 2.0); we added the boxes.
