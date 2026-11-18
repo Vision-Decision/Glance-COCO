@@ -10,8 +10,7 @@
 <p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a></p>
 
 <p align="center">
-  <b>Exact boxes. Many ways to ask.</b><br>
-  Grounding data for one image and many text requests
+  A dataset for finding objects in images from a text request
 </p>
 
 <p align="center">
@@ -22,77 +21,96 @@
   <a href="LICENSE-DATA.md"><img src="https://img.shields.io/badge/Data-CC%20BY--NC--SA%204.0-6B7280?logo=creativecommons&logoColor=white" alt="Data license: CC BY-NC-SA 4.0"></a>
 </p>
 
+## What is this?
+
+You give a model an image and a short text request, such as *"the two cows lying on the left"*. The model answers with
+a **bounding box** (a rectangle drawn around the object) for every matching object, or says the object **is not in the
+image**. This task is called *visual grounding*.
+
+Glance-Data provides training and test data for this task. Every image comes with many requests, and every request
+comes with the correct answer.
+
 <p align="center">
   <img src="assets/example.jpg" width="680" alt="Cows on a farm: an orange box marks the large grazing cow, two blue boxes mark the two cows lying on the left">
 </p>
 
-<p align="center">
-  <sub><b>1</b> the big cow eating hay → 1 box　·　<b>2</b> the two cows lying together on the left → 2 boxes　·　<b>3</b> a horse → not present</sub>
-</p>
+| # | Request | Correct answer |
+|---|---|---|
+| 1 | the big cow eating hay | the orange box |
+| 2 | the two cows lying together on the left | both blue boxes |
+| 3 | a horse | not in the image |
 
----
+## What kinds of requests are included?
 
-Glance-Data extends the RefCOCO family with the requests that data is missing:
+Existing datasets such as RefCOCO mostly contain one style of request: a short English phrase that picks out a single
+object. Glance-Data adds the other ways people actually ask:
 
-- **More ways to ask.** Each target gets short, medium and long descriptions, casual phrasing and Chinese, plus
-  category-only ("the tie") and all-instance ("all the zebras") requests.
-- **Saying "not present".** Hard negatives keep the category but get a detail wrong, such as "a black cow" when every
-  cow is white and brown. There are also count, position and near-category negatives.
-- **Several boxes at once.** Multi-target requests, and descriptions by use ("something to sit on").
+| Request type | Example | Correct answer |
+|---|---|---|
+| Detailed description | *the large white-and-brown cow eating hay in the middle* | 1 box |
+| Short or casual | *the big grazing cow* | 1 box |
+| Just the object name | *the tie* (there is only one tie) | 1 box |
+| All objects of a kind | *all the zebras* | 5 boxes |
+| Several objects together | *the two cows lying together on the left* | 2 boxes |
+| By what it is used for | *something to sit on* | every chair and sofa |
+| Chinese | *左边穿黑色西装的男子* ("the man in a black suit on the left") | 1 box |
+| Right object, wrong detail | *a black cow* (every cow is white and brown) | not in the image |
+| Wrong number or place | *six zebras* (there are five) | not in the image |
 
-Boxes, counts and whether a category is present all come straight from COCO annotations. The LLM only writes the
-wording.
+The box positions come from COCO, a large set of photos in which people drew a box around every object. A language
+model (DeepSeek) only writes the text of the requests. It never decides where the boxes are.
 
-## Dataset
+## Get the data
 
-| split | images | questions | from |
+| Split | Images | Requests | Purpose |
 |---|---:|---:|---|
-| `train` | 24,406 | 1,831,146 | RefCOCO-family training images, with every benchmark image removed |
-| `diagnostic` | 300 | 23,578 | held-out `refcoco_val` images, never used for training |
+| `train` | 24,406 | 1,831,146 | training |
+| `diagnostic` | 300 | 23,578 | testing; these images are never used for training |
 
 ```python
 from datasets import load_dataset
 
 ds = load_dataset("Vision-Decision/Glance-Data")
 for q in ds["train"][0]["questions"][:3]:
-    print(q["kind"], q["text"], q["boxes"])
+    print(q["text"], q["present"], q["boxes"])
 ```
 
-Each row is one image. Each question has `text`, `lang`, `kind`, `present` and `boxes`. The images are COCO 2014 and
-are not redistributed.
+Each row is one image, listed with its `image_id` and file name. Each request has its `text`, a `kind` (one of the
+types above), `present` (whether the object is in the image) and `boxes` (`[x0, y0, x1, y1]` in pixels). The images
+themselves are COCO 2014 photos and are not included.
 
-## How it works
+## How the data is made
 
 ```mermaid
 flowchart LR
-    A["Images + COCO annotations<br/>existing human descriptions"] --> B["① inventory<br/>objects per image"]
-    B --> C["② generate<br/>DeepSeek writes the wording"]
-    C --> D["③ assemble<br/>rule filters · rule-made queries"]
-    A -. "boxes · counts · presence" .-> D
+    A["COCO photos<br/>with human-drawn boxes"] --> B["① List the objects<br/>in each photo"]
+    B --> C["② DeepSeek looks at the photo<br/>and writes requests"]
+    C --> D["③ Check the requests<br/>and add rule-based ones"]
+    A -. "box positions and counts" .-> D
     D --> E[("Glance-Data")]
 ```
 
-In a stratified human audit, about 90% of 112 sampled labels were correct, and all 16 hard negatives were correct.
+We checked quality by hand: we sampled 112 requests across all types and looked at each one against its image. About
+90% were correct, and every "right object, wrong detail" request was correct.
 
-## Quickstart
+## Rebuild it yourself
 
 ```bash
 uv venv && uv pip install -e ".[dev]"
-cp .env.example .env            # data paths and the API key file
-make pipeline SPLIT=train       # inventory → generate → assemble → compare
+cp .env.example .env            # set the data paths and your DeepSeek API key file
+make pipeline SPLIT=train
 ```
 
-| path | what |
+| Folder | Contents |
 |---|---|
-| `glance_data/` | one resumable module per stage |
-| `tests/` | unit tests for the rule-based logic |
-| `docs/` | data diagnosis and validation results |
-| `AGENTS.md` | record schema, design rules, validation protocol |
+| `glance_data/` | the code, one module per step |
+| `tests/` | tests |
+| `docs/` | analysis of the original data and quality-check results |
+| `AGENTS.md` | data format and design rules, for contributors |
 
 ## License
 
-The code is licensed under [Apache-2.0](LICENSE). The data is licensed under [CC BY-NC-SA 4.0](LICENSE-DATA.md), for
-**non-commercial research only**, which follows the terms of the gRefCOCO source data. "Data" covers the Hugging Face
-dataset, everything the pipeline produces, and `docs/results/`. Source terms and citations are in
-[LICENSE-DATA.md](LICENSE-DATA.md). The example image is from COCO
-([Flickr](http://farm7.staticflickr.com/6214/6266504428_369fe0f165_z.jpg), CC BY 2.0); we added the boxes.
+The code is under [Apache-2.0](LICENSE). The data is under [CC BY-NC-SA 4.0](LICENSE-DATA.md) and is for
+**non-commercial research only**, because it builds on gRefCOCO, which uses the same license. See
+[LICENSE-DATA.md](LICENSE-DATA.md) for every source and how to cite it. The example photo is from COCO
+([Flickr](http://farm7.staticflickr.com/6214/6266504428_369fe0f165_z.jpg), CC BY 2.0); we drew the boxes.
