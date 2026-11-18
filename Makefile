@@ -3,7 +3,7 @@ OUT ?= out
 PY ?= python
 WORKERS ?= 32
 
-.PHONY: help test lint analyze inventory generate assemble compare pipeline diag-set audit
+.PHONY: help test lint analyze inventory generate assemble compare pipeline diag-set audit export-hf
 
 help:
 	@echo "make test | lint"
@@ -21,6 +21,7 @@ analyze:
 	$(PY) -m glance_data.analyze --out $(OUT)/analysis.json
 
 SPLIT ?= train
+HF_SPLIT ?= train
 LIMIT ?= 0
 inventory:
 	$(PY) -m glance_data.inventory --images $(SPLIT) --out $(OUT)/inv_$(SPLIT) --limit $(LIMIT)
@@ -38,6 +39,9 @@ pipeline: inventory generate assemble compare
 
 diag-set:
 	$(MAKE) inventory generate assemble SPLIT=refcoco_val LIMIT=300
+
+export-hf:
+	$(PY) -m glance_data.export_hf --src $(OUT)/aug_$(SPLIT).jsonl --split $(HF_SPLIT) --out $(OUT)/hf_repo/data
 
 audit:
 	$(PY) -m glance_data.audit sample --aug $(OUT)/aug_$(SPLIT).jsonl --inv $(OUT)/inv_$(SPLIT) --out $(OUT)/audit_$(SPLIT)

@@ -28,6 +28,8 @@ glance_data/
   assemble.py    stage 3  rule filters + rule-made queries + merge        -> out/aug_<split>.jsonl
   compare.py     before/after distribution of the training data           -> out/compare_<split>.json
   audit.py       stratified human audit: sample + render, then score
+  export_hf.py   records -> Parquet shards for the Hugging Face dataset (no images)
+hf/DATASET_CARD.md  the dataset card published as README.md on the Hub
 tests/           unit tests for the rule-based logic (no data, no network)
 docs/RESULTS.md  findings and audit numbers; docs/results/*.json raw summaries
 ```
@@ -55,6 +57,22 @@ python -m glance_data.audit score --judgements out/audit/judgements.json
 
 All stages are resumable. `generate` skips image ids that are already in `gen.jsonl`, so you can simply re-run it
 after an interruption. Run long jobs in a dedicated tmux session named `glance-*`.
+
+## Publishing (Hugging Face)
+
+The dataset is `Vision-Decision/Glance-Data` on the Hub. It is **private**, licensed CC BY-NC 4.0 because it contains
+gRefCOCO, and contains no images. To publish a new version:
+
+```bash
+python -m glance_data.export_hf --src out/aug_train_all.jsonl --split train --out hf_repo/data
+python -m glance_data.export_hf --src out/aug_refcoco_val.jsonl --split diagnostic --out hf_repo/data
+cp hf/DATASET_CARD.md hf_repo/README.md        # update the numbers in it first
+HF_TOKEN=$(cat <token file>) python -c "from huggingface_hub import HfApi; HfApi().upload_folder(repo_id='Vision-Decision/Glance-Data', repo_type='dataset', folder_path='hf_repo')"
+```
+
+Use a token file outside the repo, as with the DeepSeek key, and pass it only through `HF_TOKEN`. Never run
+`hf auth login` on the shared server: it would replace the login other projects use. Ask before making the dataset
+public.
 
 ## Record schema (the contract with consumers)
 

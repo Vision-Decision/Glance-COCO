@@ -9,6 +9,8 @@
 
 模型、训练和评测都不在这个仓库里。
 
+数据集已发布在 Hugging Face：[Vision-Decision/Glance-Data](https://huggingface.co/datasets/Vision-Decision/Glance-Data)（私有，不含图片，CC BY-NC 4.0）。
+
 ## Pipeline
 
 ```
