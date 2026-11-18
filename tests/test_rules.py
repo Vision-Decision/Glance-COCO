@@ -87,7 +87,8 @@ def test_assemble_end_to_end(tmp_path):
                         "zh_medium": "左边穿黑色西装的男子",
                         "hard_negatives": [
                             {"text": "man in a white suit on the left", "zh": "左边穿白色西装的男子", "edit": "attribute"},
-                            {"text": "man in a black suit on the right", "zh": "右边穿黑色西装的男子", "edit": "attribute"}]}]}
+                            {"text": "man in a black suit on the right", "zh": "右边穿黑色西装的男子", "edit": "attribute"},
+                            {"text": "man in a black suit sitting on the left", "edit": "action"}]}]}
     g = dict(image_id=1, gen=gen, queries=collect_queries(rec, gen))
     (tmp_path / "gen.jsonl").write_text(json.dumps(g, ensure_ascii=False) + "\n")
     out = tmp_path / "aug.jsonl"
@@ -99,6 +100,7 @@ def test_assemble_end_to_end(tmp_path):
     assert "man in a black suit on the right" not in qs                  # position edit dropped
     assert "右边穿黑色西装的男子" not in qs
     assert qs["the tie"]["n_targets"] == 1                                # rule-made category-only query
+    assert qs["man in a black suit sitting on the left"]["kind"] == "hneg_relation"  # unknown edit type normalised
 
 
 def test_facets_heuristics():

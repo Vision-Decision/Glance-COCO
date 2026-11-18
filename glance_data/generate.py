@@ -7,7 +7,7 @@ box and existing human descriptions of each marked object; counts of every annot
 Output per marked object: a specificity ladder (short / medium / long), a casual phrasing, Chinese versions and
 minimally-edited hard negatives; per image: group expressions (2+ objects) and use/role descriptions whose
 targets are decided later by code from the COCO categories the model names.
-Output: OUT_DIR/gen.jsonl, one line per image (resumable). Thinking is disabled (JSON only, ~0.02 CNY / image).
+Output: OUT_DIR/gen.jsonl, one line per image (resumable). Thinking is disabled (JSON only, ~0.005 CNY / image).
 """
 import argparse
 import base64

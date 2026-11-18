@@ -1,0 +1,19 @@
+{
+ "drop:function_crowd": 1834,
+ "drop:hneg_position_changed": 77737,
+ "drop:mark_leak": 7504,
+ "out:aug_code:cat_all": 76590,
+ "out:aug_code:cat_only": 46917,
+ "out:aug_code:neg_count": 149931,
+ "out:aug_code:neg_near": 84482,
+ "out:aug_code:neg_position": 63198,
+ "out:aug_function:function": 87390,
+ "out:aug_gref:gref_multi": 54841,
+ "out:aug_llm:casual": 211142,
+ "out:aug_llm:group": 84304,
+ "out:aug_llm:hneg_attribute": 202299,
+ "out:aug_llm:hneg_relation": 140938,
+ "out:aug_llm:long": 208176,
+ "out:aug_llm:medium": 210602,
+ "out:aug_llm:short": 210336
+}

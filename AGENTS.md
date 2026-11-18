@@ -89,8 +89,8 @@ Multi-target questions (`n_targets > 1`) need a consumer that supports several b
    - drop functions that touch crowd-annotated categories.
 4. **Held-out images stay held out.** Training augmentation uses only images in `JEV_PREP/train.jsonl`, which has every
    benchmark image removed. The diagnostic set uses `refcoco_val` images. Never mix the two.
-5. **DeepSeek usage.** Use `deepseek-flash` with thinking disabled (`thinking: {type: disabled}`): about 0.003 CNY per
-   image, about 5 images/s with 32 workers. Thinking mode costs roughly 30x more and times out on long answers. Check
+5. **DeepSeek usage.** Use `deepseek-flash` with thinking disabled (`thinking: {type: disabled}`): about 0.005 CNY per
+   image (the full 24,406-image run cost ~122 CNY and took ~70 min with 32 workers). Thinking mode costs roughly 30x more and times out on long answers. Check
    the balance (`GET /user/balance`) before runs of more than a few thousand images.
 6. **Secrets.** The API key lives only in a file outside the repo (`DEEPSEEK_API_KEY_FILE`, chmod 600). Never print it,
    pass it on a command line or commit it. CI fails on anything that looks like a key. Never commit server addresses

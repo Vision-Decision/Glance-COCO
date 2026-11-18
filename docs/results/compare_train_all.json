@@ -1,0 +1,50 @@
+{
+ "original": {
+  "counts": {
+   "questions": 355385,
+   "lang_en": 355385,
+   "negatives": 88846,
+   "neg_same_category_in_image": 6820,
+   "positives": 266539,
+   "multi_target": 0
+  },
+  "en_positive_specificity": {
+   "0_fragment": 0.19671792870836913,
+   "1_category_only": 0.14340865689448823,
+   "2_one_cue": 0.42754718821635856,
+   "3_two_cues": 0.20052975361954536,
+   "4_three_cues": 0.031796472561238694
+  }
+ },
+ "augmentation": {
+  "counts": {
+   "questions": 1831146,
+   "lang_en": 945117,
+   "positives": 1190298,
+   "multi_target": 273816,
+   "lang_zh": 886029,
+   "negatives": 640848,
+   "neg_same_category_in_image": 556366,
+   "use_or_role": 87390,
+   "bare_category_single": 46917
+  },
+  "en_positive_specificity": {
+   "0_fragment": 0.14604538521917257,
+   "1_category_only": 0.20848835057401582,
+   "2_one_cue": 0.2740470826978424,
+   "3_two_cues": 0.21210825574494427,
+   "4_three_cues": 0.15931092576402495
+  }
+ },
+ "combined_counts": {
+  "questions": 2186531,
+  "lang_en": 1300502,
+  "negatives": 729694,
+  "neg_same_category_in_image": 563186,
+  "positives": 1456837,
+  "multi_target": 273816,
+  "lang_zh": 886029,
+  "use_or_role": 87390,
+  "bare_category_single": 46917
+ }
+}

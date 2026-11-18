@@ -87,6 +87,9 @@ SPATIAL_EN = set("""left right middle center centre top bottom front back behind
 SPATIAL_ZH = ["左", "右", "中间", "中央", "正中", "上方", "下方", "上面", "下面", "前", "后", "边缘", "角", "旁", "第"]
 
 
+HNEG_KINDS = {"hneg_attribute", "hneg_relation"}
+
+
 def spatial_sig(text, lang):
     if lang == "zh":
         return tuple(w for w in SPATIAL_ZH if w in text)
@@ -175,6 +178,8 @@ def main():
                 medium[(o.get("mark"), "zh")] = o.get("zh_medium") or ""
             for qq in (g["queries"] if g else []):
                 kind = qq["kind"]
+                if kind.startswith("hneg_") and kind not in HNEG_KINDS:   # the LLM sometimes invents an edit type
+                    kind = "hneg_relation"
                 if kind in drop:
                     continue
                 if qq["intent"] == "code":              # function: all instances of the named categories
