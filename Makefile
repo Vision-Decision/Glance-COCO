@@ -3,13 +3,15 @@ OUT ?= out
 PY ?= python
 WORKERS ?= 32
 
-.PHONY: help test lint analyze inventory generate assemble compare pipeline diag-set audit export-hf
+.PHONY: help test lint analyze inventory generate assemble compare pipeline diag-set audit export-hf twins twin-gate
 
 help:
 	@echo "make test | lint"
 	@echo "make analyze                       # diagnose current data + benchmarks -> $(OUT)/analysis.json"
 	@echo "make pipeline SPLIT=train          # inventory -> generate -> assemble -> compare"
 	@echo "make diag-set                      # 300 held-out val images -> $(OUT)/aug_refcoco_val.jsonl"
+	@echo "make twins EVAL_IDS=... [MIX=...]  # minimal pairs (docs/TWINS.md) -> $(OUT)/twins/train.jsonl"
+	@echo "make twin-gate [SPLIT_BY=image]    # text-only probe AUROC -> $(OUT)/twins/gate_$(SPLIT_BY).json"
 
 test:
 	$(PY) -m pytest -q
@@ -45,3 +47,15 @@ export-hf:
 
 audit:
 	$(PY) -m glance_data.audit sample --aug $(OUT)/aug_$(SPLIT).jsonl --inv $(OUT)/inv_$(SPLIT) --out $(OUT)/audit_$(SPLIT)
+
+# minimal pairs (docs/TWINS.md). EVAL_IDS: json list / dict of lists of held-out image ids; never used as twin images
+MIX ?= $(OUT)/aug_$(SPLIT).jsonl
+COCO_ANN ?= $(JEV_DATA)/grefcoco/instances.json
+TWIN_CONFIG ?= configs/twins_v14.json
+SPLIT_BY ?= text
+twins:
+	@test -n "$(EVAL_IDS)" || (echo "set EVAL_IDS=<eval_image_ids.json>"; exit 1)
+	$(PY) -m glance_data.twins.build --mix $(MIX) --coco $(COCO_ANN) --eval-ids $(EVAL_IDS) --config $(TWIN_CONFIG) --out $(OUT)/twins
+
+twin-gate:
+	$(PY) -m glance_data.twins.gate --mix $(OUT)/twins/train.jsonl --split $(SPLIT_BY) --config $(TWIN_CONFIG) --out $(OUT)/twins/gate_$(SPLIT_BY).json
