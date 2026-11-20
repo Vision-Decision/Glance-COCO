@@ -2,12 +2,14 @@
 
 A bag-of-n-grams logistic regression (TF-IDF over words 1-2 and characters 2-4) is trained on the question strings of
 a training mixture, without the image, and scored by AUROC on held-out strings. 0.5 means the text carries no presence
-signal. The gates (see TwinConfig.gates) are measured on subsets of the held-out questions:
+signal. On a family whose every string is exactly twinned, a string-grouped split gives 0.5 by construction: the gate
+then checks that the twins were built and nothing was left unpaired, not that a model needs the image. The gates (see TwinConfig.gates) are measured on subsets of the held-out questions:
 
   S1 rule      kinds that can be twinned by rule (TwinConfig.rule_kinds)       <= 0.65
   S2 count     count questions and their pairs                                  <= 0.55
   S3 position  position questions and their pairs                               <= 0.55
   S4 zh_rule   Chinese questions of the rule kinds                              <= 0.55
+  S5 near      near-category negatives ("a toaster") and their pairs            <= 0.55
   S1_full, S4_full: the same on every box question / every Chinese question. Reported, not gated: LLM-written hard
   negatives cannot be twinned by rule, so some text signal is expected to remain there.
 
@@ -74,7 +76,7 @@ def subset_masks(kind, lang, cfg):
     k, zh = np.array(kind, dtype=object), np.array([x == "zh" for x in lang], dtype=bool)
     rule = np.isin(k, list(cfg.rule_kinds))
     return dict(all=np.ones(len(k), dtype=bool), count=np.isin(k, list(cfg.count_kinds)),
-                position=np.isin(k, list(cfg.position_kinds)), zh=zh, rule=rule, zh_rule=rule & zh)
+                position=np.isin(k, list(cfg.position_kinds)), near=np.isin(k, list(cfg.near_gate_kinds)), zh=zh, rule=rule, zh_rule=rule & zh)
 
 
 def score_gates(y, s, kind, lang, cfg):

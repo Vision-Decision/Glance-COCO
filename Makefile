@@ -51,7 +51,7 @@ audit:
 # minimal pairs (docs/TWINS.md). EVAL_IDS: json list / dict of lists of held-out image ids; never used as twin images
 MIX ?= $(OUT)/aug_$(SPLIT).jsonl
 COCO_ANN ?= $(JEV_DATA)/grefcoco/instances.json
-TWIN_CONFIG ?= configs/twins_v14.json
+TWIN_CONFIG ?= configs/twins_v15.json
 SPLIT_BY ?= text
 twins:
 	@test -n "$(EVAL_IDS)" || (echo "set EVAL_IDS=<eval_image_ids.json>"; exit 1)

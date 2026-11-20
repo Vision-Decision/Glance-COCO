@@ -26,18 +26,40 @@ Every new question gets its truth from COCO annotations, as in `assemble.py`. No
 | Position pairs | `neg_position` "the cup on the left" / "左边的杯子" (absent) | same string, **present** (`mp_pos_pos`) | the image's only cup is reliable and its centre is in the left (right) third |
 | Missing-category twins | a present question of a rule-answered kind: `cat_only`, `cat_all`, `cf_anchor`, `pos_pos_sole`, `count_pos` (and the category-free `cf_func`, `cf_generic`, `cf_rel`, whose target is a known COCO box) | same string, **absent** (`mp_twin_neg`, `twin_of` = source kind) | no instance of any category the string names or the target belongs to. For `count_pos` ("the two dogs") an image where the category is present **with a different count** is preferred, which is the harder negative |
 | Chinese pairs | a Chinese RefCOCO translation, `ref_zh` (present) | same string, **absent** (`mp_zh_neg`) | no instance of the target's category or of any category whose Chinese name occurs in the string |
+| Near-category pairs (v1.5) | `neg_near` "a toaster" / "一台烤面包机" (absent) | same string, **present** (`mp_near_pos`) | the image's only toaster is reliable |
 
 "Reliable" means: not crowd, at least 0.5% of the image, and not a sliver under 2% of the image cut off at the border.
 A target's category is found from the text (en/zh names and synonyms in `twins/lexicon.py`), from `ref_cat` when the
-record has it, and from the source-image annotation that coincides with the target box.
+record has it, and from the source-image annotation that coincides with the target box. A word that can name several
+categories ("bag": backpack and handbag; "glass": cup and wine glass; "瓶": bottle and vase) rules out all of them. For
+the category-free kinds (`cf_func`, `cf_generic`, `cf_rel`) the absent image also has no instance of the target's
+COCO supercategory or of its confusable classes (`assemble.NEAR`): "something to sit on" written for a chair is just
+as true of a couch or a bench.
 
 **Lone negatives are dropped.** If no eligible image exists for a count or position string ("six dogs"; "the toaster
 on the right"), the negative is removed instead of being kept unpaired. Unpaired negatives would bring the shortcut
-back. In v1.4 this removed 4,137 count negatives.
+back. In v1.4 this removed 4,137 count negatives. Since v1.5 the same holds for near-category negatives. Strings that
+do not match a template are counted apart (`*_neg_unparsed`) from those that found no image (`*_neg_dropped`).
 
 Every twin image is outside the held-out evaluation images (`--eval-ids`) and is never the source image. Images are
 drawn round-robin from a seeded shuffle, so pairs spread over many images. Given `--seed` and the input order, the
 output is deterministic.
+
+## v1.5: label fixes and near-category pairs
+
+v1.4 left two families of label errors and one unpaired family. v1.5 (`configs/twins_v15.json`, the default) fixes
+them. It has not yet been rebuilt on the full mix: the numbers below are still those of v1.4.
+
+| Problem in v1.4 | v1.5 |
+|---|---|
+| A `count_pos` twin ("the two dogs", absent) could land on an image whose dog count is uncertain: a crowd region, or two clear dogs plus an annotated speck (3 annotations) | the wrong-count image must have every instance reliable and no crowd; otherwise the twin falls back to an image without the category |
+| An ambiguous word named one category only ("bag" -> backpack), so "the man with a bag" could be made absent on an image with a handbag | the word rules out every category it can name |
+| A category-free description could be made absent on an image where another class fits it ("something to sit on" on a couch) | supercategory and confusable classes are ruled out too |
+| `neg_near` ("a toaster") was never present anywhere: v1.4's probe gave it a mean presence of 0.215 | present twin on an image with one reliable instance (`mp_near_pos`), or the negative is dropped; gate S5 |
+| Chinese rule strings used 个 for every noun ("两个狗") | the category's measure word ("两只狗", "一台烤面包机") |
+
+`configs/twins_v14.json` turns off the near-category pairs and the widened exclusion. The two label fixes always
+apply, so the exact v1.4 questions are reproduced only by commit `23332a6`.
 
 ## v1.4 build
 
@@ -71,10 +93,15 @@ or a public cleaned export. The data is not in this repository. The build statis
 | S2 | count questions | 0.55 | 0.948 | **0.500** |
 | S3 | position questions | 0.55 | 0.753 | **0.500** |
 | S4 | Chinese, rule-twinnable kinds | 0.55 | 0.959 | **0.500** |
+| S5 (v1.5) | near-category negatives and their pairs | 0.55 | – | – |
 | S1_full | every box question (reported) | – | 0.853 | 0.722 |
 | S4_full | every Chinese question (reported) | – | 0.942 | 0.594 |
 
-All four gates pass, and on every rule-twinnable subset the text-only probe is exactly at chance.
+All four gates pass, and on every rule-twinnable subset the text-only probe is exactly at chance. That is by
+construction: each string of these families occurs as often present as absent, and the split holds out whole
+strings, so any text-only score gives both halves the same value. The gates therefore confirm that every rule-made
+string got its twin and none was left unpaired. They do not show that the twins need more than category detection;
+for that, the audit (`glance_data.audit`) has to sample `mp_*` questions.
 
 **What remains is a difference in style between sources, not the negatives.** S1_full and S4_full stay above
 chance. The obvious suspect is the LLM-written hard negatives (`hneg_attribute`, `hneg_relation`, ...; "a black cow"
@@ -118,8 +145,9 @@ make twin-gate                            # out/twins/gate_text.json; add SPLIT_
 ```
 
 The builder reads `kind` (Glance-Data records) or `qtype` (prepared training mixes). It copies the input records,
-minus dropped negatives, and appends the new records. All settings, and the defaults used for v1.4, are in
-`configs/twins_v14.json`.
+minus dropped negatives, and appends the new records. All settings are in `configs/twins_v15.json` (the default);
+`stats_twins.json` records `candidate_images`, which depends on `--coco`: the Makefile default `COCO_ANN` covers only
+the 19,994 RefCOCO images, while v1.4 drew from the full `instances_train2014.json`.
 
 ## Limitations
 
@@ -127,7 +155,8 @@ minus dropped negatives, and appends the new records. All settings, and the defa
   sources, not the negatives: dropping all non-twinned LLM hard negatives raises S1_full to 0.768 (see above). Twins
   fix rule-made questions only.
 - **COCO misses objects.** An absent twin can be wrong when the category is in the image but not annotated. This is
-  the same risk as the existing `neg_near` negatives.
+  the same risk as the existing `neg_near` negatives. A present twin is wrong in the opposite case: "two dogs" on
+an image with two annotated dogs and a third one nobody annotated.
 - **Category matching is lexical.** A Chinese sentence whose noun is not in the lexicon, and whose box matches no
   annotation, gets no twin (counted as `*_no_category` in the stats). Its category cannot be identified, so it is not
   safe to twin.

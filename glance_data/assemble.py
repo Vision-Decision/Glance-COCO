@@ -19,6 +19,8 @@ import os
 import random
 import re
 
+from glance_data.twins.lexicon import ZH_MW
+
 # COCO category -> (English singular, English plural, Chinese)
 NAMES = {
     "person": ("person", "people", "人"), "bicycle": ("bicycle", "bicycles", "自行车"), "car": ("car", "cars", "汽车"),
@@ -131,7 +133,7 @@ def code_items(rec, rng, min_area=0.005):
             k = n + rng.choice([1, 2]) if n >= 2 else 2
             k = min(k, 6)
             out += [q(f"{NUM_EN[k]} {pl}", "en", "neg_count", "aug_code", []),
-                    q(f"{NUM_ZH[k]}个{zh}" if cat != "person" else f"{NUM_ZH[k]}个人", "zh", "neg_count", "aug_code", [])]
+                    q(f"{NUM_ZH[k]}{ZH_MW.get(cat, '个')}{zh}", "zh", "neg_count", "aug_code", [])]
         # position negative: no instance of this category on that side (centre-based, with margin)
         cx = [((o["box"][0] + o["box"][2]) / 2) / W for o in objs]
         if min(cx) > 0.6:
@@ -146,7 +148,7 @@ def code_items(rec, rng, min_area=0.005):
             c = rng.choice(cands)
             en, pl, zh = NAMES[c]
             out += [q(f"a {en}" if not en.startswith(("a", "e", "i", "o", "u")) else f"an {en}", "en", "neg_near", "aug_code", []),
-                    q(f"一{'个' if c != 'person' else '个'}{zh}", "zh", "neg_near", "aug_code", [])]
+                    q(f"一{ZH_MW.get(c, '个')}{zh}", "zh", "neg_near", "aug_code", [])]
     return out
 
 
