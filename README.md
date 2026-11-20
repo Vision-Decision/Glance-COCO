@@ -1,11 +1,11 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
-    <img src="assets/logo-light.svg" width="88" alt="Glance-Data">
+    <img src="assets/logo-light.svg" width="88" alt="Glance-COCO">
   </picture>
 </p>
 
-<h1 align="center">Glance-Data</h1>
+<h1 align="center">Glance-COCO</h1>
 
 <p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a></p>
 
@@ -15,7 +15,7 @@
 
 <p align="center">
   <a href="https://huggingface.co/datasets/Vision-Decision/Glance-COCO"><img src="https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?logo=huggingface&logoColor=000" alt="Hugging Face dataset"></a>
-  <a href="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml"><img src="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/Vision-Decision/Glance-COCO/actions/workflows/ci.yml"><img src="https://github.com/Vision-Decision/Glance-COCO/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
   <a href="LICENSE"><img src="https://img.shields.io/badge/Code-Apache%202.0-2F80ED?logo=apache&logoColor=white" alt="Code license: Apache-2.0"></a>
   <a href="LICENSE-DATA.md"><img src="https://img.shields.io/badge/Data-CC%20BY--NC--SA%204.0-6B7280?logo=creativecommons&logoColor=white" alt="Data license: CC BY-NC-SA 4.0"></a>
@@ -27,7 +27,7 @@ You give a model an image and a short text request, such as *"the two cows lying
 a **bounding box** (a rectangle drawn around the object) for every matching object, or says the object **is not in the
 image**. This task is called *visual grounding*.
 
-Glance-Data provides training and test data for this task. Every image comes with many requests, and every request
+Glance-COCO provides training and test data for this task. Every image comes with many requests, and every request
 comes with the correct answer.
 
 <p align="center">
@@ -43,7 +43,7 @@ comes with the correct answer.
 ## What kinds of requests are included?
 
 Existing datasets such as RefCOCO mostly contain one style of request: a short English phrase that picks out a single
-object. Glance-Data adds the other ways people actually ask:
+object. Glance-COCO adds the other ways people actually ask:
 
 | Request type | Example | Correct answer |
 |---|---|---|
@@ -62,9 +62,9 @@ model (DeepSeek) only writes the text of the requests. It never decides where th
 
 ## Get the data
 
-On Hugging Face the dataset is now called [Glance-COCO](https://huggingface.co/datasets/Vision-Decision/Glance-COCO) (formerly Glance-Data; the old id still
-redirects). Besides the data built here (the `default` config), it holds the `plus` training supplements, the
-trainer-format records and the `robust` evaluation set.
+This project was called Glance-Data until 2026-11-20; the old GitHub and Hugging Face addresses redirect. On Hugging
+Face, [Glance-COCO](https://huggingface.co/datasets/Vision-Decision/Glance-COCO) holds the data built here (the `default`
+config) together with the `plus` training supplements, the trainer-format records and the `robust` evaluation set.
 
 | Split | Images | Requests | Purpose |
 |---|---:|---:|---|
@@ -91,7 +91,7 @@ flowchart LR
     B --> C["② DeepSeek looks at the photo<br/>and writes requests"]
     C --> D["③ Check the requests<br/>and add rule-based ones"]
     A -. "box positions and counts" .-> D
-    D --> E[("Glance-Data")]
+    D --> E[("Glance-COCO")]
 ```
 
 We checked quality by hand: we sampled 112 requests across all types and looked at each one against its image. About

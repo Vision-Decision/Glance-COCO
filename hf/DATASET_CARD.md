@@ -50,7 +50,7 @@ boxes, or "not present". This repository was called **Glance-Data**; the old URL
 `load_dataset("Vision-Decision/Glance-Data")` keeps working.
 
 It now also holds the COCO-image datasets that were published separately: the training supplements that fix
-Glance-Data's known shortcuts, the trainer-format records, the evaluation sets and the build intermediates. Each one
+the main data's known shortcuts, the trainer-format records, the evaluation sets and the build intermediates. Each one
 is a config or a folder here, and its original card is kept unchanged in [`provenance/`](provenance/).
 
 **Ground truth comes from COCO annotations. Language models only write the wording.** Images are COCO 2014 train and
@@ -111,4 +111,4 @@ gRefCOCO val/testA/testB splits, COCO val2017, the `diagnostic` split or the `ro
 CC BY-NC-SA 4.0, for non-commercial research only (inherited from gRefCOCO). Images are not included; COCO
 annotations are CC BY 4.0. Per-part provenance and licences are in the original cards under `provenance/`.
 
-Pipeline code: [Vision-Decision/Glance-Data](https://github.com/Vision-Decision/Glance-Data) on GitHub.
+Pipeline code: [Vision-Decision/Glance-COCO](https://github.com/Vision-Decision/Glance-COCO) on GitHub.

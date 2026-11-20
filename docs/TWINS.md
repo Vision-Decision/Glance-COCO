@@ -144,7 +144,7 @@ make twins MIX=out/aug_train.jsonl COCO_ANN=/path/to/instances_train2014.json EV
 make twin-gate                            # out/twins/gate_text.json; add SPLIT_BY=image for the artefact check
 ```
 
-The builder reads `kind` (Glance-Data records) or `qtype` (prepared training mixes). It copies the input records,
+The builder reads `kind` (Glance-COCO records) or `qtype` (prepared training mixes). It copies the input records,
 minus dropped negatives, and appends the new records. All settings are in `configs/twins_v15.json` (the default);
 `stats_twins.json` records `candidate_images`, which depends on `--coco`: the Makefile default `COCO_ANN` covers only
 the 19,994 RefCOCO images, while v1.4 drew from the full `instances_train2014.json`.

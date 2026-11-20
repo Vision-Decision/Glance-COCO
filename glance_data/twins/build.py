@@ -132,7 +132,7 @@ def parse_near(text):
 
 
 def kind_of(q):
-    """Glance-Data records use `kind`; prepared training mixtures use `qtype`."""
+    """Glance-COCO records use `kind`; prepared training mixtures use `qtype`."""
     return q.get("kind") or q.get("qtype") or ""
 
 
@@ -341,7 +341,7 @@ def new_records(new, images, cfg):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mix", required=True, help="input records (Glance-Data aug_*.jsonl or a prepared training mix)")
+    ap.add_argument("--mix", required=True, help="input records (Glance-COCO aug_*.jsonl or a prepared training mix)")
     ap.add_argument("--coco", required=True, help="COCO instances json for the candidate images, e.g. instances_train2014.json")
     ap.add_argument("--eval-ids", required=True, help="json list (or dict of lists) of held-out image ids, never used")
     ap.add_argument("--out", required=True, help="output directory: train.jsonl + stats_twins.json")

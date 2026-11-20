@@ -69,7 +69,8 @@ after an interruption. Run long jobs in a dedicated tmux session named `glance-*
 ## Publishing (Hugging Face)
 
 The dataset is `Vision-Decision/Glance-COCO` on the Hub (renamed from `Glance-Data` on 2026-11-20; the old id
-redirects). It is **public**, licensed CC BY-NC-SA 4.0 (non-commercial
+redirects; the GitHub repository was renamed to Glance-COCO the same day, and the Python package is still
+`glance_data`). It is **public**, licensed CC BY-NC-SA 4.0 (non-commercial
 research only; gRefCOCO's ShareAlike terms carry over, see `LICENSE-DATA.md`), and contains no images. To publish a new version:
 
 ```bash

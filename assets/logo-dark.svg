@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Glance-Data">
-  <title>Glance-Data</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Glance-COCO">
+  <title>Glance-COCO</title>
   <g fill="none" stroke="#EEF0F4" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M18 46V28a10 10 0 0 1 10-10h18"/>
     <path d="M82 18h18a10 10 0 0 1 10 10v18"/>

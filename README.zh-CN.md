@@ -1,11 +1,11 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
-    <img src="assets/logo-light.svg" width="88" alt="Glance-Data">
+    <img src="assets/logo-light.svg" width="88" alt="Glance-COCO">
   </picture>
 </p>
 
-<h1 align="center">Glance-Data</h1>
+<h1 align="center">Glance-COCO</h1>
 
 <p align="center"><a href="README.md">English</a> · <b>简体中文</b></p>
 
@@ -15,7 +15,7 @@
 
 <p align="center">
   <a href="https://huggingface.co/datasets/Vision-Decision/Glance-COCO"><img src="https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?logo=huggingface&logoColor=000" alt="Hugging Face dataset"></a>
-  <a href="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml"><img src="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/Vision-Decision/Glance-COCO/actions/workflows/ci.yml"><img src="https://github.com/Vision-Decision/Glance-COCO/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
   <a href="LICENSE"><img src="https://img.shields.io/badge/Code-Apache%202.0-2F80ED?logo=apache&logoColor=white" alt="Code license: Apache-2.0"></a>
   <a href="LICENSE-DATA.md"><img src="https://img.shields.io/badge/Data-CC%20BY--NC--SA%204.0-6B7280?logo=creativecommons&logoColor=white" alt="Data license: CC BY-NC-SA 4.0"></a>
@@ -25,7 +25,7 @@
 
 给模型一张图片和一句文字要求，比如*“左边一起躺着的两头牛”*。模型要把每个符合要求的物体用**框**标出来（框就是围住物体的矩形）；如果图里没有这样的物体，就回答**图里没有**。这类任务叫作*视觉定位*（visual grounding）。
 
-Glance-Data 为这个任务提供训练和测试数据：每张图片都配有很多条文字要求，每条要求都带有正确答案。
+Glance-COCO 为这个任务提供训练和测试数据：每张图片都配有很多条文字要求，每条要求都带有正确答案。
 
 <p align="center">
   <img src="assets/example.jpg" width="680" alt="牧场上的牛群：橙色框标出站着吃草的大牛，两个蓝色框标出左边躺着的两头牛">
@@ -39,7 +39,7 @@ Glance-Data 为这个任务提供训练和测试数据：每张图片都配有�
 
 ## 数据里有哪些类型的要求？
 
-RefCOCO 等现有数据集里，大多只有一种要求：用一句简短的英文，指出图中的某一个物体。Glance-Data 补上了人们实际会用的其他问法：
+RefCOCO 等现有数据集里，大多只有一种要求：用一句简短的英文，指出图中的某一个物体。Glance-COCO 补上了人们实际会用的其他问法：
 
 | 要求类型 | 例子 | 正确答案 |
 |---|---|---|
@@ -57,8 +57,9 @@ RefCOCO 等现有数据集里，大多只有一种要求：用一句简短的英
 
 ## 获取数据
 
-数据集在 Hugging Face 上已更名为 [Glance-COCO](https://huggingface.co/datasets/Vision-Decision/Glance-COCO)（原名 Glance-Data，旧地址会自动跳转）。除了本流程生成的数据
-（`default` 配置），它还包含 `plus` 训练补充数据、训练器格式的记录和 `robust` 评测集。
+本项目在 2026-11-20 之前叫 Glance-Data，GitHub 和 Hugging Face 的旧地址都会自动跳转。Hugging Face 上的
+[Glance-COCO](https://huggingface.co/datasets/Vision-Decision/Glance-COCO) 包含本流程生成的数据（`default` 配置），以及 `plus`
+训练补充数据、训练器格式的记录和 `robust` 评测集。
 
 | 部分 | 图片 | 要求 | 用途 |
 |---|---:|---:|---|
@@ -89,7 +90,7 @@ flowchart LR
     B --> C["② DeepSeek 看照片<br/>写文字要求"]
     C --> D["③ 检查这些要求<br/>再按规则补充一批"]
     A -. "框的位置和数量" .-> D
-    D --> E[("Glance-Data")]
+    D --> E[("Glance-COCO")]
 ```
 
 质量由人工抽查：在所有类型中抽了 112 条要求，逐条对照图片检查，约 90% 正确；“物体对、细节错”这一类全部正确。
