@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://huggingface.co/datasets/Vision-Decision/Glance-Data"><img src="https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?logo=huggingface&logoColor=000" alt="Hugging Face dataset"></a>
+  <a href="https://huggingface.co/datasets/Vision-Decision/Glance-COCO"><img src="https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?logo=huggingface&logoColor=000" alt="Hugging Face dataset"></a>
   <a href="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml"><img src="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
   <a href="LICENSE"><img src="https://img.shields.io/badge/Code-Apache%202.0-2F80ED?logo=apache&logoColor=white" alt="Code license: Apache-2.0"></a>
@@ -62,6 +62,10 @@ model (DeepSeek) only writes the text of the requests. It never decides where th
 
 ## Get the data
 
+On Hugging Face the dataset is now called [Glance-COCO](https://huggingface.co/datasets/Vision-Decision/Glance-COCO) (formerly Glance-Data; the old id still
+redirects). Besides the data built here (the `default` config), it holds the `plus` training supplements, the
+trainer-format records and the `robust` evaluation set.
+
 | Split | Images | Requests | Purpose |
 |---|---:|---:|---|
 | `train` | 24,406 | 1,831,146 | training |
@@ -70,7 +74,7 @@ model (DeepSeek) only writes the text of the requests. It never decides where th
 ```python
 from datasets import load_dataset
 
-ds = load_dataset("Vision-Decision/Glance-Data")
+ds = load_dataset("Vision-Decision/Glance-COCO")
 for q in ds["train"][0]["questions"][:3]:
     print(q["text"], q["present"], q["boxes"])
 ```

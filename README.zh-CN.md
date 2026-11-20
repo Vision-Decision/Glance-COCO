@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://huggingface.co/datasets/Vision-Decision/Glance-Data"><img src="https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?logo=huggingface&logoColor=000" alt="Hugging Face dataset"></a>
+  <a href="https://huggingface.co/datasets/Vision-Decision/Glance-COCO"><img src="https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?logo=huggingface&logoColor=000" alt="Hugging Face dataset"></a>
   <a href="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml"><img src="https://github.com/Vision-Decision/Glance-Data/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
   <a href="LICENSE"><img src="https://img.shields.io/badge/Code-Apache%202.0-2F80ED?logo=apache&logoColor=white" alt="Code license: Apache-2.0"></a>
@@ -57,6 +57,9 @@ RefCOCO 等现有数据集里，大多只有一种要求：用一句简短的英
 
 ## 获取数据
 
+数据集在 Hugging Face 上已更名为 [Glance-COCO](https://huggingface.co/datasets/Vision-Decision/Glance-COCO)（原名 Glance-Data，旧地址会自动跳转）。除了本流程生成的数据
+（`default` 配置），它还包含 `plus` 训练补充数据、训练器格式的记录和 `robust` 评测集。
+
 | 部分 | 图片 | 要求 | 用途 |
 |---|---:|---:|---|
 | `train` | 24,406 | 1,831,146 | 训练 |
@@ -65,7 +68,7 @@ RefCOCO 等现有数据集里，大多只有一种要求：用一句简短的英
 ```python
 from datasets import load_dataset
 
-ds = load_dataset("Vision-Decision/Glance-Data")
+ds = load_dataset("Vision-Decision/Glance-COCO")
 for q in ds["train"][0]["questions"][:3]:
     print(q["text"], q["present"], q["boxes"])
 ```

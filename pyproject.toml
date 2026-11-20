@@ -26,7 +26,7 @@ probe = ["scikit-learn>=1.3"]   # only for the text-only gate (glance_data.twins
 
 [project.urls]
 Homepage = "https://github.com/Vision-Decision/Glance-Data"
-Dataset = "https://huggingface.co/datasets/Vision-Decision/Glance-Data"
+Dataset = "https://huggingface.co/datasets/Vision-Decision/Glance-COCO"
 
 [build-system]
 requires = ["setuptools>=68"]

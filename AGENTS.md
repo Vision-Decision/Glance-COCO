@@ -68,14 +68,17 @@ after an interruption. Run long jobs in a dedicated tmux session named `glance-*
 
 ## Publishing (Hugging Face)
 
-The dataset is `Vision-Decision/Glance-Data` on the Hub. It is **private**, licensed CC BY-NC-SA 4.0 (non-commercial
+The dataset is `Vision-Decision/Glance-COCO` on the Hub (renamed from `Glance-Data` on 2026-11-20; the old id
+redirects). It is **public**, licensed CC BY-NC-SA 4.0 (non-commercial
 research only; gRefCOCO's ShareAlike terms carry over, see `LICENSE-DATA.md`), and contains no images. To publish a new version:
 
 ```bash
 python -m glance_data.export_hf --src out/aug_train_all.jsonl --split train --out hf_repo/data
 python -m glance_data.export_hf --src out/aug_refcoco_val.jsonl --split diagnostic --out hf_repo/data
 cp hf/DATASET_CARD.md hf_repo/README.md        # update the numbers in it first
-HF_TOKEN=$(cat <token file>) python -c "from huggingface_hub import HfApi; HfApi().upload_folder(repo_id='Vision-Decision/Glance-Data', repo_type='dataset', folder_path='hf_repo')"
+# The Hub repo also holds plus/, records/, eval/, intermediates/ and provenance/ (merged 2026-11-20);
+# upload_folder only adds and overwrites, so upload data/ and README.md only and never delete those folders.
+HF_TOKEN=$(cat <token file>) python -c "from huggingface_hub import HfApi; HfApi().upload_folder(repo_id='Vision-Decision/Glance-COCO', repo_type='dataset', folder_path='hf_repo')"
 ```
 
 Use a token file outside the repo, as with the DeepSeek key, and pass it only through `HF_TOKEN`. Never run

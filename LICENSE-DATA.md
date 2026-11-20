@@ -5,7 +5,7 @@ The **code** in this repository is licensed under Apache-2.0 (see `LICENSE`).
 The **data** is licensed under
 [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 and may be used for **non-commercial research only**. "Data" means:
-- the Glance-Data dataset on the Hugging Face Hub (`Vision-Decision/Glance-Data`);
+- the Glance-COCO dataset on the Hugging Face Hub (`Vision-Decision/Glance-COCO`, formerly `Vision-Decision/Glance-Data`);
 - every file this pipeline produces (`out/`, `aug_*.jsonl`, Parquet exports);
 - the data-derived files in this repository: `docs/results/` and `hf/DATASET_CARD.md`.
 

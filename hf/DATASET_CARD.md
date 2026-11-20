@@ -3,6 +3,7 @@ license: cc-by-nc-sa-4.0
 language:
 - en
 - zh
+pretty_name: Glance-COCO
 task_categories:
 - object-detection
 - zero-shot-object-detection
@@ -13,7 +14,6 @@ tags:
 - coco
 - hard-negatives
 - multi-target
-pretty_name: Glance-Data
 size_categories:
 - 1M<n<10M
 configs:
@@ -23,95 +23,92 @@ configs:
     path: data/train-*.parquet
   - split: diagnostic
     path: data/diagnostic-*.parquet
+- config_name: plus
+  data_files:
+  - split: train
+    path: plus/train-*.parquet
+- config_name: diagnostic_pos_sole
+  data_files:
+  - split: test
+    path: eval/parquet/diagnostic_pos_sole.parquet
+- config_name: robust
+  data_files:
+  - split: zh
+    path: eval/parquet/robust-zh.parquet
+  - split: para
+    path: eval/parquet/robust-para.parquet
+  - split: func
+    path: eval/parquet/robust-func.parquet
+  - split: vague
+    path: eval/parquet/robust-vague.parquet
 ---
 
-# Glance-Data
+# Glance-COCO
 
-Grounding data for a Jev-style task. Each example is one image plus many text requests. Every request is answered in
-parallel with one box, several boxes, or "not present".
+Grounding data on COCO images: one image, many text requests, and every request is answered with one box, several
+boxes, or "not present". This repository was called **Glance-Data**; the old URL redirects here, so
+`load_dataset("Vision-Decision/Glance-Data")` keeps working.
 
-This dataset augments the RefCOCO-family training data. It adds the kinds of requests that the original data lacks:
-- a ladder of specificity (short / medium / long) and casual phrasing, all in English and Chinese;
-- category-only requests ("the tie") and all-instance requests ("all the zebras");
-- multi-target requests and descriptions by use ("something to sit on");
-- hard negatives: the same category is present, but a detail is wrong ("a black cow" when every cow is white-brown);
-  count, position and near-category negatives.
+It now also holds the COCO-image datasets that were published separately: the training supplements that fix
+Glance-Data's known shortcuts, the trainer-format records, the evaluation sets and the build intermediates. Each one
+is a config or a folder here, and its original card is kept unchanged in [`provenance/`](provenance/).
 
-**Ground truth comes from COCO annotations. An LLM only writes the wording.** Boxes, counts and "is this category in
-the image" are computed from the annotations. DeepSeek (deepseek-flash, vision) looked at each image and wrote the
-sentences for numbered objects. Rule filters remove sentences that leak the drawing and "attribute" negatives that
-changed the position instead.
+**Ground truth comes from COCO annotations. Language models only write the wording.** Images are COCO 2014 train and
+are not included.
 
-## Splits
+## Configs
 
-| split | images | questions | images from |
-|---|---:|---:|---|
-| `train` | 24,406 | 1,831,146 | RefCOCO-family training images, with every benchmark image removed |
-| `diagnostic` | 300 | 23,578 | `refcoco_val` images, never used for training |
+| config | split(s) | rows | use | formerly |
+|---|---|---:|---|---|
+| `default` | `train`, `diagnostic` | 24,406 / 300 images | the main data: 1,831,146 / 23,578 requests in 14 kinds | Glance-Data |
+| `plus` | `train` | 57,092 rows, 317,500 requests | **train-only supplements** that fix shortcuts in `default` (see below); same schema plus a `source` column, so it concatenates with `default` | Glance-Data-Plus-clean |
+| `diagnostic_pos_sole` | `test` | 160 records, 764 requests | **evaluation only**: sole-instance position / superlative positives on the diagnostic images | glance-ground-v2 |
+| `robust` | `zh`, `para`, `func`, `vague` | 6,236 items | **evaluation only**: paraphrased, functional, vague and Chinese requests on RefCOCO/gRefCOCO val images | glance-robust-ref-clean |
 
-No image appears in both splits. No `train` image appears in any RefCOCO / RefCOCO+ / RefCOCOg / gRefCOCO evaluation
-set (6,549 images held out).
+## Trainer-format records (jsonl files)
 
-## Fields
-
-One row per image:
-
-| field | type | meaning |
-|---|---|---|
-| `image_id` | int | COCO image id |
-| `file` | string | `COCO_train2014_<id>.jpg` (COCO 2014 train images; not included here) |
-| `width`, `height` | int | original image size |
-| `questions` | list | requests for this image |
-
-Each question:
-
-| field | meaning |
-|---|---|
-| `text` | the request |
-| `lang` | `en` / `zh` |
-| `kind` | see below |
-| `src` | `aug_llm` (LLM wording), `aug_function` (LLM names the categories, code picks every instance), `aug_code` (fully rule-made), `aug_gref` (human gRefCOCO multi-target sentence) |
-| `present` | whether the request matches something in the image |
-| `n_targets` | 0, 1 or more |
-| `boxes` | every target as `[x0, y0, x1, y1]` in pixels of the original image; empty when `present` is false |
-
-| kind | answer | ground truth |
-|---|---|---|
-| `short`, `medium`, `long`, `casual` | 1 box | the object the LLM was asked to describe |
-| `group` | ≥2 boxes | the objects the LLM was asked to describe together |
-| `function` | ≥1 box | every instance of the COCO categories the LLM named for that use |
-| `cat_only` / `cat_all` | 1 / all boxes | COCO annotations (category with one instance / all instances) |
-| `gref_multi` | ≥2 boxes | human gRefCOCO annotation |
-| `hneg_attribute`, `hneg_relation` | not present | LLM edit of one attribute or action, position words kept identical |
-| `neg_count`, `neg_position`, `neg_near` | not present | COCO annotations (more than present / no instance on that side / absent near category) |
-
-## Quality
-
-A stratified human audit judged 8 random items per kind, 112 in total: **101/112 (≈90%) correct**. Every kind scored
-≥6/8 except category-only (5/8), which was then fixed by skipping slivers under 0.5% of the image. Hard negatives
-scored 16/16. The most common remaining error is a short description that is not unique (for example "green tie"
-when there are two green ties).
-
-## Usage
+`records/` holds `default` + `pos_pos_sole` in the Glance trainer's record format, as plain jsonl (formerly
+glance-ground-v2): `full/` (51,177 records, ≤48 requests each, every target in `boxes`, for multi-box heads),
+`single/` (45,027 records, `n_targets` ≤ 1, for single-box heads) and `diagnostic.jsonl` (300 records). They are files,
+not configs, because one Hub dataset can only expose one file format:
 
 ```python
 from datasets import load_dataset
-ds = load_dataset("Vision-Decision/Glance-Data")
-row = ds["train"][0]
-for q in row["questions"][:5]:
-    print(q["kind"], q["lang"], q["present"], q["text"], q["boxes"])
+full = load_dataset("json", data_files="hf://datasets/Vision-Decision/Glance-COCO/records/full/*.jsonl", split="train")
 ```
 
-Images come from COCO 2014 train (`file`). A model with a single-box head can use one target per question. Using
-`group`, `cat_all`, `function` and `gref_multi` fully needs a multi-box head.
+## What `plus` fixes
 
-## License and sources
+| problem in `default` | fix | source in `plus` |
+|---|---|---|
+| position words ("the leftmost cat") appear only in negatives, so a model learns to reject them (Glance v1 rejected 86.5% of sole-instance position requests) | rule-made positives on the only instance of a category, sampled 1:1 against `neg_position` | `ground_v2_gap_rule` |
+| `neg_count` can be recognised from the text alone 98.6% of the time | "exactly n" positives (n = 2–5), so a count becomes a minimal pair | `v1.3_count_pairs` |
+| almost every request names the category | function, supercategory and relation requests without the category word, with negatives of the same form; blind re-identification check plus a leak lexicon | `v1.2_catfree` |
+| regressions seen in v1.2 | targeted negatives: absent class at a position or in a relation | `v1.3_negatives` |
 
-- Images: COCO (not redistributed here); COCO annotations are CC BY 4.0.
-- Referring expressions: RefCOCO / RefCOCO+ / RefCOCOg (research use) and gRefCOCO, which is CC BY-NC-SA 4.0 and
-  released for non-commercial research purposes only. Its ShareAlike clause carries over, so this dataset is released
-  under **CC BY-NC-SA 4.0, for non-commercial research only**.
-- Please cite gRefCOCO (GRES, CVPR 2023), RefCOCO / RefCOCO+ / RefCOCOg and COCO when using the data.
-- Generated text: written by DeepSeek (deepseek-flash) from the images.
+`plus/manifest/` lists, by SHA-1 only, the RefCOCO expressions that were replayed during training and the Chinese
+translations that are not redistributed (licence of RefCOCO-family text is unclear).
 
-Pipeline code: `Vision-Decision/Glance-Data` on GitHub.
+## Folders
+
+| folder | contents |
+|---|---|
+| `data/` | `default` parquet files (unchanged paths) |
+| `plus/` | `plus` parquet files, `manifest/`, `stats.json` |
+| `records/` | trainer-format jsonl: `full/`, `single/`, `diagnostic.jsonl`, `stats.json` |
+| `eval/` | the original `diagnostic_pos_sole.jsonl` and `robust/` jsonl files (with the `withheld/` reference list and `stats.json`); `parquet/` holds row-for-row parquet copies that back the `diagnostic_pos_sole` and `robust` configs |
+| `intermediates/` | build intermediates: rule-made scene specs, raw and filtered category-free generations (`catfree_v12/`), v1.3 negatives and count positives, decontamination id and hash lists, the Glance-X data preparation script and provenance |
+| `provenance/` | the original cards of the five merged repositories, unchanged |
+
+## Decontamination
+
+All training images are COCO train2014. No training image appears in the RefCOCO/+/g val or test splits, the
+gRefCOCO val/testA/testB splits, COCO val2017, the `diagnostic` split or the `robust` set. The `robust` and
+`diagnostic*` configs are for evaluation only: do not train on them.
+
+## Licence
+
+CC BY-NC-SA 4.0, for non-commercial research only (inherited from gRefCOCO). Images are not included; COCO
+annotations are CC BY 4.0. Per-part provenance and licences are in the original cards under `provenance/`.
+
+Pipeline code: [Vision-Decision/Glance-Data](https://github.com/Vision-Decision/Glance-Data) on GitHub.
