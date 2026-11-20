@@ -1,0 +1,10 @@
+{
+ "count_pairs": 33617,
+ "pos_pairs": 11806,
+ "count_neg_dropped": 4137,
+ "mp_twin_neg": 218002,
+ "mp_zh_neg": 57542,
+ "twin_count_wrongn": 14172,
+ "new_records": 74310,
+ "records_total": 450702
+}

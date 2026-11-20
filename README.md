@@ -93,6 +93,11 @@ flowchart LR
 We checked quality by hand: we sampled 112 requests across all types and looked at each one against its image. About
 90% were correct, and every "right object, wrong detail" request was correct.
 
+Rule-made requests such as *six zebras* are only written when the answer is "not in the image", so a model could learn
+the answer from the words alone. An optional step, `make twins`, places each of them word for word on another image
+where the answer is the opposite. We call such a pair a *minimal pair*. After this step, a test that reads only the
+text does no better than chance on these requests. See [docs/TWINS.md](docs/TWINS.md).
+
 ## Rebuild it yourself
 
 ```bash
@@ -106,6 +111,7 @@ make pipeline SPLIT=train
 | `glance_data/` | the code, one module per step |
 | `tests/` | tests |
 | `docs/` | analysis of the original data and quality-check results |
+| `configs/` | settings for the minimal-pair step |
 | `AGENTS.md` | data format and design rules, for contributors |
 
 ## License
