@@ -161,8 +161,9 @@ in `docs/results/`. Commit messages are imperative and short, with a body that e
 ## Known limitations
 
 - Short descriptions are sometimes not unique (6/8 in the audit), e.g. "green tie" when there are two green ties.
-- LLM-written hard negatives (`hneg_*`) cannot be twinned by rule, so the text-only AUROC over all questions stays above
-  chance (0.722 on the v1.4 mix) even though every rule-made family is at 0.5.
+- The text-only AUROC over all questions stays above chance (0.722 on the v1.4 mix) even though every rule-made family
+  is at 0.5. The rest comes from style differences between sources, not from the LLM hard negatives (`hneg_*`, which
+  cannot be twinned): dropping them raises it to 0.768. See `docs/TWINS.md`.
 - COCO misses some objects, so a rule-made negative such as "a toaster" can be wrong when the object is present but
   unannotated (near-category negatives: 7/8 in the audit).
 - Licensing: code is Apache-2.0; all data is CC BY-NC-SA 4.0 for non-commercial research only (gRefCOCO is
