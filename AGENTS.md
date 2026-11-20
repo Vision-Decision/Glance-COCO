@@ -29,6 +29,10 @@ glance_data/
   compare.py     before/after distribution of the training data           -> out/compare_<split>.json
   audit.py       stratified human audit: sample + render, then score
   export_hf.py   records -> Parquet shards for the Hugging Face dataset (no images)
+  twins/         minimal pairs: same string, other answer, other image   -> out/twins/ (docs/TWINS.md)
+    build.py     count / position / Chinese pairs and missing-category twins
+    gate.py      text-only probe gate (AUROC, string-grouped split)
+configs/twins_v14.json  the v1.4 minimal-pair and gate settings
 hf/DATASET_CARD.md  the dataset card published as README.md on the Hub
 tests/           unit tests for the rule-based logic (no data, no network)
 assets/          logo (light/dark) and README artwork
@@ -55,6 +59,8 @@ make pipeline SPLIT=train             # stages 1-3 + compare on all training ima
 make diag-set                         # 300 held-out refcoco_val images -> out/aug_refcoco_val.jsonl
 python -m glance_data.audit sample --aug out/aug_train.jsonl --inv out/inv_train --out out/audit
 python -m glance_data.audit score --judgements out/audit/judgements.json
+make twins MIX=out/aug_train.jsonl EVAL_IDS=<ids.json>   # minimal pairs -> out/twins/train.jsonl
+make twin-gate                        # text-only probe; needs pip install -e ".[probe]"
 ```
 
 All stages are resumable. `generate` skips image ids that are already in `gen.jsonl`, so you can simply re-run it
@@ -87,9 +93,10 @@ The per-image layout is the same as the prepared `train.jsonl`: `image_id, file,
 | `box` | xyxy pixels of the single target, or `null` |
 | `boxes` | all targets (xyxy), `null` when absent |
 | `n_targets` | 0, 1 or more |
-| `kind` | `short medium long casual group function hneg_attribute hneg_relation cat_only cat_all neg_count neg_position neg_near gref_multi` |
+| `kind` | `short medium long casual group function hneg_attribute hneg_relation cat_only cat_all neg_count neg_position neg_near gref_multi`; minimal pairs add `mp_count_pos mp_pos_pos mp_zh_neg mp_twin_neg` |
 | `lang` | `en` or `zh` |
-| `src` | `aug_llm`, `aug_function`, `aug_code` or `aug_gref` |
+| `src` | `aug_llm`, `aug_function`, `aug_code`, `aug_gref` or `aug_twin` |
+| `twin_of` | only on `mp_twin_neg` and `mp_zh_neg`: the kind of the present question this one twins |
 
 Changing this schema breaks consumers. If you add a field, keep the existing ones and document the new one here.
 Multi-target questions (`n_targets > 1`) need a consumer that supports several boxes.
@@ -107,12 +114,16 @@ Multi-target questions (`n_targets > 1`) need a consumer that supports several b
      position instead of the attribute);
    - no category-only query when the largest instance covers less than 0.5% of the image;
    - drop functions that touch crowd-annotated categories.
-4. **Held-out images stay held out.** Training augmentation uses only images in `JEV_PREP/train.jsonl`, which has every
+4. **Rule-made questions come in pairs.** `twins/build.py` gives every rule-made negative a present question with the
+   same string on another image (and drops the negative when no such image exists), and every rule-answered positive
+   an absent one. Ground truth: COCO counts, the sole instance's side, and category absence. Check a new mix with
+   `make twin-gate`; S1-S4 must stay within their thresholds (docs/TWINS.md).
+5. **Held-out images stay held out.** Training augmentation uses only images in `JEV_PREP/train.jsonl`, which has every
    benchmark image removed. The diagnostic set uses `refcoco_val` images. Never mix the two.
-5. **DeepSeek usage.** Use `deepseek-flash` with thinking disabled (`thinking: {type: disabled}`): about 0.005 CNY per
+6. **DeepSeek usage.** Use `deepseek-flash` with thinking disabled (`thinking: {type: disabled}`): about 0.005 CNY per
    image (the full 24,406-image run cost ~122 CNY and took ~70 min with 32 workers). Thinking mode costs roughly 30x more and times out on long answers. Check
    the balance (`GET /user/balance`) before runs of more than a few thousand images.
-6. **Secrets.** The API key lives only in a file outside the repo (`DEEPSEEK_API_KEY_FILE`, chmod 600). Never print it,
+7. **Secrets.** The API key lives only in a file outside the repo (`DEEPSEEK_API_KEY_FILE`, chmod 600). Never print it,
    pass it on a command line or commit it. CI fails on anything that looks like a key. Never commit server addresses
    or SSH keys.
 
@@ -135,7 +146,8 @@ The server is a shared 8×H200 machine with live services from other projects.
 
 ## Code conventions
 
-- Python ≥3.10. Dependencies are the standard library plus numpy, pandas, pyarrow and pillow. Nothing else.
+- Python ≥3.10. Dependencies are the standard library plus numpy, pandas, pyarrow and pillow. Nothing else. The one
+  exception is scikit-learn for the text-only gate, as the optional `probe` extra; nothing else may import it.
 - Every stage is a module with a CLI (`python -m glance_data.<stage>`), resumable, and deterministic given `--seed`.
 - Keep rule logic as pure functions (`assemble.code_items`, `assemble.spatial_sig`, `generate.collect_queries`) and
   cover them in `tests/`. Tests must not need data, GPUs or the network.
@@ -149,6 +161,8 @@ in `docs/results/`. Commit messages are imperative and short, with a body that e
 ## Known limitations
 
 - Short descriptions are sometimes not unique (6/8 in the audit), e.g. "green tie" when there are two green ties.
+- LLM-written hard negatives (`hneg_*`) cannot be twinned by rule, so the text-only AUROC over all questions stays above
+  chance (0.722 on the v1.4 mix) even though every rule-made family is at 0.5.
 - COCO misses some objects, so a rule-made negative such as "a toaster" can be wrong when the object is present but
   unannotated (near-category negatives: 7/8 in the audit).
 - Licensing: code is Apache-2.0; all data is CC BY-NC-SA 4.0 for non-commercial research only (gRefCOCO is

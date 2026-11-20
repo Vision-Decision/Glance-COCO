@@ -1,0 +1,203 @@
+{
+ "split": "image",
+ "n_questions": 1402679,
+ "n_test": 139252,
+ "present_rate": 0.6209809942260489,
+ "gates": {
+  "S1": {
+   "subset": "rule",
+   "n": 66820,
+   "present_rate": 0.4950014965579168,
+   "auroc": 0.39704324999235924,
+   "threshold": 0.65,
+   "passed": true
+  },
+  "S2": {
+   "subset": "count",
+   "n": 9638,
+   "present_rate": 0.497613612782735,
+   "auroc": 0.37253688620456465,
+   "threshold": 0.55,
+   "passed": true
+  },
+  "S3": {
+   "subset": "position",
+   "n": 7219,
+   "present_rate": 0.49397423465853996,
+   "auroc": 0.3928874215662447,
+   "threshold": 0.55,
+   "passed": true
+  },
+  "S4": {
+   "subset": "zh_rule",
+   "n": 30185,
+   "present_rate": 0.49272817624648,
+   "auroc": 0.3394506328257056,
+   "threshold": 0.55,
+   "passed": true
+  },
+  "S1_full": {
+   "subset": "all",
+   "n": 139252,
+   "present_rate": 0.6176141096716744,
+   "auroc": 0.720892824142669,
+   "threshold": 0.65,
+   "passed": false
+  },
+  "S4_full": {
+   "subset": "zh",
+   "n": 37987,
+   "present_rate": 0.5087529944454682,
+   "auroc": 0.5237237897145596,
+   "threshold": 0.55,
+   "passed": true
+  }
+ },
+ "per_kind": {
+  "": {
+   "n": 47490,
+   "present_rate": 0.8071383449147189,
+   "mean_p": 0.8159410211390724
+  },
+  "casual": {
+   "n": 1795,
+   "present_rate": 1.0,
+   "mean_p": 0.7634134883480669
+  },
+  "cat_all": {
+   "n": 3975,
+   "present_rate": 0.4840251572327044,
+   "mean_p": 0.5117076697559527
+  },
+  "cat_only": {
+   "n": 6068,
+   "present_rate": 0.49093605800922874,
+   "mean_p": 0.5122932312210732
+  },
+  "cf_anchor": {
+   "n": 5931,
+   "present_rate": 0.5009273309728545,
+   "mean_p": 0.5013498367734509
+  },
+  "cf_func": {
+   "n": 12678,
+   "present_rate": 0.4972393121943524,
+   "mean_p": 0.4996169338358365
+  },
+  "cf_func_neg": {
+   "n": 1447,
+   "present_rate": 0.0,
+   "mean_p": 0.2793166681773255
+  },
+  "cf_generic": {
+   "n": 6032,
+   "present_rate": 0.49137931034482757,
+   "mean_p": 0.42961866679176025
+  },
+  "cf_generic_neg": {
+   "n": 2014,
+   "present_rate": 0.0,
+   "mean_p": 0.2609235332208767
+  },
+  "cf_pos_absent": {
+   "n": 450,
+   "present_rate": 0.0,
+   "mean_p": 0.42312099729364516
+  },
+  "cf_rel": {
+   "n": 3801,
+   "present_rate": 0.4988161010260458,
+   "mean_p": 0.40902789958113706
+  },
+  "cf_rel_neg": {
+   "n": 1571,
+   "present_rate": 0.0,
+   "mean_p": 0.20366021069217552
+  },
+  "cf_rel_neg_absent": {
+   "n": 269,
+   "present_rate": 0.0,
+   "mean_p": 0.22359386017466612
+  },
+  "count_pos": {
+   "n": 2984,
+   "present_rate": 0.4979892761394102,
+   "mean_p": 0.5021131621177191
+  },
+  "function": {
+   "n": 1470,
+   "present_rate": 1.0,
+   "mean_p": 0.793995506119501
+  },
+  "hneg_attribute": {
+   "n": 1861,
+   "present_rate": 0.0,
+   "mean_p": 0.4930690752385578
+  },
+  "hneg_relation": {
+   "n": 1656,
+   "present_rate": 0.0,
+   "mean_p": 0.39881741111284263
+  },
+  "long": {
+   "n": 1877,
+   "present_rate": 1.0,
+   "mean_p": 0.8617051125660776
+  },
+  "medium": {
+   "n": 1901,
+   "present_rate": 1.0,
+   "mean_p": 0.5869558020426416
+  },
+  "mp_count_pos": {
+   "n": 3310,
+   "present_rate": 1.0,
+   "mean_p": 0.4873687457350338
+  },
+  "mp_pos_pos": {
+   "n": 1180,
+   "present_rate": 1.0,
+   "mean_p": 0.500819829105635
+  },
+  "mp_zh_neg": {
+   "n": 5802,
+   "present_rate": 0.0,
+   "mean_p": 0.5698524711920724
+  },
+  "neg_count": {
+   "n": 3344,
+   "present_rate": 0.0,
+   "mean_p": 0.503987905892668
+  },
+  "neg_near": {
+   "n": 1037,
+   "present_rate": 0.0,
+   "mean_p": 0.15661320996504632
+  },
+  "neg_position": {
+   "n": 1178,
+   "present_rate": 0.0,
+   "mean_p": 0.5061226495404484
+  },
+  "pos_pos_sole": {
+   "n": 4861,
+   "present_rate": 0.4908455050401152,
+   "mean_p": 0.4960602623697751
+  },
+  "ref_en": {
+   "n": 5676,
+   "present_rate": 1.0,
+   "mean_p": 0.7658947845571928
+  },
+  "ref_zh": {
+   "n": 5676,
+   "present_rate": 1.0,
+   "mean_p": 0.4970751945661101
+  },
+  "short": {
+   "n": 1878,
+   "present_rate": 1.0,
+   "mean_p": 0.7597657075900823
+  }
+ }
+}
