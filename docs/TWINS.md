@@ -54,9 +54,11 @@ exactly (335,139 new questions, identical image, text, answer and boxes).
 | Missing-category twins (`mp_twin_neg`) | 218,002 |
 | ... of which `count_pos` twins on a wrong-count image | 14,172 |
 
-The mix itself is in the private Hugging Face dataset `Vision-Decision/glance-train-data`, folder `v1.4/`
-(`train.jsonl`, `stats_mp.json`, `gate_text.json`, `gate_image.json`). The data is not in this repository. The build
-statistics and gate summaries are in `docs/results/twins_*.json`.
+The mix itself is in the Hugging Face dataset `Vision-Decision/glance-train-data`, folder `v1.4/` (`train.jsonl`,
+`stats_mp.json`, `gate_text.json`, `gate_image.json`); `v1.4_strict/` holds the variant without non-twinned LLM
+negatives (k = 0 below). That dataset is **private**: reading it needs access to the `Vision-Decision` organisation,
+or a public cleaned export. The data is not in this repository. The build statistics and gate summaries are in
+`docs/results/twins_*.json`.
 
 ## The gate
 
@@ -74,11 +76,22 @@ statistics and gate summaries are in `docs/results/twins_*.json`.
 
 All four gates pass, and on every rule-twinnable subset the text-only probe is exactly at chance.
 
-**What remains is the LLM-written hard negatives.** S1_full and S4_full still sit above chance because of
-`hneg_attribute` / `hneg_relation` and other LLM-written negatives ("a black cow" when every cow is brown). They
-cannot be twinned by rule. A twin would need an image on which that exact sentence is true, and annotations cannot
-decide that. These negatives are what teaches attribute and relation checking, so they are kept. The gate therefore
-scores the rule-twinnable kinds and reports the full pool next to them.
+**What remains is a difference in style between sources, not the negatives.** S1_full and S4_full stay above
+chance. The obvious suspect is the LLM-written hard negatives (`hneg_attribute`, `hneg_relation`, ...; "a black cow"
+when every cow is brown). They cannot be twinned by rule: a twin would need an image on which that exact sentence is
+true, and annotations cannot decide that. But removing them does not lower the full-pool AUROC; it raises it. Keeping
+only a fraction k of the non-twinned LLM negatives:
+
+| k (kept) | 1 (v1.4) | 0.5 | 0.25 | 0.1 | 0 |
+|---|---:|---:|---:|---:|---:|
+| S1_full | 0.722 | 0.741 | 0.748 | 0.747 | 0.768 |
+| S4_full | 0.594 | 0.594 | 0.596 | 0.598 | 0.593 |
+
+The signal comes from whole families of questions whose wording style differs from the negatives. The largest block
+is about 48k box questions from the natural-image, GUI and PixMo pools: 82% of them are positive, and the probe gives
+them a mean presence of 0.82. Human-written RefCOCO positives (`ref_en`) get 0.77. Removing that signal would mean
+deleting GUI and natural-image positives, which is not worth it. So the LLM negatives are kept (they teach attribute
+and relation checking), the gate scores the rule-twinnable kinds, and the full pool is reported next to them.
 
 ### Split by string, not by image
 
@@ -110,7 +123,9 @@ minus dropped negatives, and appends the new records. All settings, and the defa
 
 ## Limitations
 
-- **LLM-written hard negatives have no twin** (see above). The full-pool AUROC stays above chance by construction.
+- **The full pool is not at chance** (S1_full 0.722, S4_full 0.594). The remaining signal is style differences between
+  sources, not the negatives: dropping all non-twinned LLM hard negatives raises S1_full to 0.768 (see above). Twins
+  fix rule-made questions only.
 - **COCO misses objects.** An absent twin can be wrong when the category is in the image but not annotated. This is
   the same risk as the existing `neg_near` negatives.
 - **Category matching is lexical.** A Chinese sentence whose noun is not in the lexicon, and whose box matches no
