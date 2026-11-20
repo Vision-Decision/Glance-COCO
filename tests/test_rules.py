@@ -61,6 +61,15 @@ def test_near_category_negatives_are_absent_classes():
                 assert "dog" not in q["text"] and not q["present"]
 
 
+def test_rule_strings_use_chinese_measure_words_and_parse_back():
+    from glance_data.twins.build import parse_count, parse_near
+    rec = record([inst(1, "dog", [0, 0, 300, 300]), inst(2, "dog", [300, 0, 600, 300])])
+    zh = [q for s in range(20) for q in code_items(rec, random.Random(s)) if q["lang"] == "zh"]
+    counts = {q["text"] for q in zh if q["kind"] == "neg_count"}
+    assert counts and all("只狗" in x for x in counts) and all(parse_count(x)[1] == "dog" for x in counts)
+    assert all(parse_near(q["text"]) for q in zh if q["kind"] == "neg_near")
+
+
 def test_collect_queries_filters():
     rec = record([inst(1, "dog", [0, 0, 10, 10])], marked=[dict(mark=1, cat="dog", box=[0, 0, 10, 10], human=[])])
     gen = {"objects": [

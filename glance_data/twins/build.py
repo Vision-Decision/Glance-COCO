@@ -15,6 +15,13 @@ and only the image can decide. Ground truth for every new question comes from CO
             category is present with a different count, which is the harder negative.
   zh        a present Chinese RefCOCO translation (zh_kinds) -> the same string, ABSENT, on an image without the target's
             category or any category whose name occurs in the string.
+  near      neg_near "a toaster" / "一台烤面包机" (near_kinds) -> the same string, PRESENT, on an image whose only toaster is
+            reliable. No such image: the negative is dropped, as for count and position.
+
+A word that can name several categories ("bag", "glass", "bike", "瓶") rules ALL of them out of an absent twin's image.
+Category-free kinds (generic_kinds: "something to sit on") also rule out the target's COCO supercategory and its
+confusable classes (assemble.NEAR), since the description may fit a couch or a bench as well as the chair it was
+written for.
 
 Images come from the COCO instances file minus every held-out evaluation image, and never equal the source image.
 Output: the input records with dropped negatives removed, then the new records (image_id, file, W, H, questions).
@@ -29,44 +36,61 @@ import os
 import random
 import re
 
+from glance_data.assemble import NEAR
 from glance_data.twins.config import load_config
 from glance_data.twins.lexicon import EN, EN_PL, IS_ZH, NAMES, NUM, ZH, ZH_NUM
 
 KIND_COUNT_POS, KIND_POS_POS, KIND_ZH_NEG, KIND_TWIN_NEG = "mp_count_pos", "mp_pos_pos", "mp_zh_neg", "mp_twin_neg"
+KIND_NEAR_POS = "mp_near_pos"
 SRC = "aug_twin"
 
 
 # ---------------------------------------------------------------------------------------------- text rules
 def name_maps():
-    """-> (English surface form -> category, Chinese name -> category). The first category to claim a word keeps it."""
-    en, zh = {}, {}
+    """-> (English surface form -> {categories}, Chinese name -> {categories}). A word keeps every category it can name."""
+    en, zh = collections.defaultdict(set), collections.defaultdict(set)
     for c in EN:
         for w in [EN[c], EN_PL[c]] + NAMES.get(c, []):
             if IS_ZH.search(w):
-                zh.setdefault(w, c)
+                zh[w].add(c)
             else:
                 for v in (w, w + "s", w + "es", "piece of " + w, "pieces of " + w, w[:-1] + "ies" if w.endswith("y") else w):
-                    en.setdefault(v, c)
-        zh.setdefault(ZH[c], c)
-    return en, zh
+                    en[v].add(c)
+        zh[ZH[c]].add(c)
+    return dict(en), dict(zh)
 
 
-EN_MAP, ZH_MAP = name_maps()
-EN_WORDS = sorted(EN_MAP, key=len, reverse=True)
-ZH_WORDS = sorted(ZH_MAP, key=len, reverse=True)
+EN_ALL, ZH_ALL = name_maps()
+EN_WORDS = sorted(EN_ALL, key=len, reverse=True)
+ZH_WORDS = sorted(ZH_ALL, key=len, reverse=True)
+
+
+def first_claim(names):
+    """For parsing a template: a word names the category of its question-facing name (EN/EN_PL/ZH) if it is one,
+    else the single category it names; words that stay ambiguous do not parse."""
+    own = {}
+    for c in EN:
+        for w in (EN[c], EN_PL[c], ZH[c]):
+            own.setdefault(w, c)
+    return {w: own.get(w) or next(iter(cs)) for w, cs in names.items() if w in own or len(cs) == 1}
+
+
+EN_MAP, ZH_MAP = first_claim(EN_ALL), first_claim(ZH_ALL)
 EN_NUM = {v: k for k, v in NUM.items()}
 ZH_NUMR = {v: k for k, v in ZH_NUM.items()} | {"二": 2}
 RE_CNT_EN = re.compile(r"^(?:the |all )?(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve) (.+)$")
 RE_CNT_ZH = re.compile(r"^(十一|十二|两|二|三|四|五|六|七|八|九|十)(.)(.+)$")   # number, measure word, name
 RE_POS_EN = re.compile(r"^the (.+) on the (left|right)(?: side)?$")
 RE_POS_ZH = re.compile(r"^(左|右)边的(.+)$")
+RE_NEAR_EN = re.compile(r"^an? (.+)$")
+RE_NEAR_ZH = re.compile(r"^一(.)(.+)$")                 # one, measure word, name
 
 
 def cats_in(text):
     """COCO categories named in `text` (zh: substring; en: whole word, plural and "piece of" forms)."""
     t = " " + text.lower() + " "
-    out = {ZH_MAP[w] for w in ZH_WORDS if w in text}
-    out |= {EN_MAP[w] for w in EN_WORDS if f" {w} " in t or f" {w}," in t or f" {w}." in t}
+    out = set().union(*[ZH_ALL[w] for w in ZH_WORDS if w in text])
+    out |= set().union(*[EN_ALL[w] for w in EN_WORDS if f" {w} " in t or f" {w}," in t or f" {w}." in t])
     return out
 
 
@@ -94,6 +118,19 @@ def parse_pos(text):
     return None
 
 
+def parse_near(text):
+    """"a toaster" / "an apple" / "一台烤面包机" -> category, else None."""
+    m = RE_NEAR_EN.match(text)
+    if m and m.group(1) in EN_MAP:
+        return EN_MAP[m.group(1)]
+    m = RE_NEAR_ZH.match(text)
+    if m:
+        for nm in (m.group(2), m.group(1) + m.group(2)):
+            if nm in ZH_MAP:
+                return ZH_MAP[nm]
+    return None
+
+
 def kind_of(q):
     """Glance-Data records use `kind`; prepared training mixtures use `qtype`."""
     return q.get("kind") or q.get("qtype") or ""
@@ -114,15 +151,17 @@ def rbox(o):
 
 
 def load_coco(path):
-    """COCO instances json -> (images {id: dict(W, H, file)}, by {id: {category name: [dict(box xyxy, crowd)]}})."""
+    """COCO instances json -> (images {id: dict(W, H, file)}, by {id: {category name: [dict(box xyxy, crowd)]}},
+    supercat {category name: supercategory name})."""
     coco = json.load(open(path))
     cats = {c["id"]: c["name"] for c in coco["categories"]}
+    supercat = {c["name"]: c.get("supercategory", c["name"]) for c in coco["categories"]}
     images = {im["id"]: dict(W=im["width"], H=im["height"], file=im["file_name"]) for im in coco["images"]}
     by = collections.defaultdict(lambda: collections.defaultdict(list))
     for an in coco["annotations"]:
         x, y, w, h = an["bbox"]
         by[an["image_id"]][cats[an["category_id"]]].append(dict(box=[x, y, x + w, y + h], crowd=bool(an["iscrowd"])))
-    return images, by
+    return images, by, supercat
 
 
 def load_eval_ids(path):
@@ -134,27 +173,31 @@ def load_eval_ids(path):
 class Pools:
     """Candidate images per pairing rule, drawn round-robin from a seeded shuffle so that pairs spread over images."""
 
-    def __init__(self, images, by, held, cfg, rng):
+    def __init__(self, images, by, held, cfg, rng, supercat=None):
         self.cfg, self.by, self.rng = cfg, by, rng
+        self.supercat = supercat or {}
         self.pool = [i for i in images if i not in held and i in by]
         self.count = collections.defaultdict(list)   # (cat, n)    -> images with exactly n reliable instances
         self.side = collections.defaultdict(list)    # (cat, side) -> images whose only instance is on that side
-        self.any = collections.defaultdict(list)     # cat         -> [(image, n instances)]
+        self.sole = collections.defaultdict(list)    # cat         -> images whose only instance is reliable
+        self.clean = collections.defaultdict(list)   # cat         -> [(image, n)]: every instance reliable, n countable
         piles = set(cfg.piles)
         for iid in self.pool:
             W, H = images[iid]["W"], images[iid]["H"]
             for c, lst in by[iid].items():
                 n = len(lst)
-                self.any[c].append((iid, n))
-                if c not in piles and cfg.count_min <= n <= cfg.count_max and all(reliable(o, W, H, cfg) for o in lst):
-                    self.count[(c, n)].append(iid)
+                if c not in piles and all(reliable(o, W, H, cfg) for o in lst):
+                    self.clean[c].append((iid, n))
+                    if cfg.count_min <= n <= cfg.count_max:
+                        self.count[(c, n)].append(iid)
                 if n == 1 and reliable(lst[0], W, H, cfg):
+                    self.sole[c].append(iid)
                     cx = (lst[0]["box"][0] + lst[0]["box"][2]) / 2
                     if cx < W * cfg.side_frac:
                         self.side[(c, "left")].append(iid)
                     elif cx > W * (1 - cfg.side_frac):
                         self.side[(c, "right")].append(iid)
-        for ix in (self.count, self.side):
+        for ix in (self.count, self.side, self.sole):
             for v in ix.values():
                 rng.shuffle(v)
         self.ptr = collections.Counter()
@@ -170,9 +213,23 @@ class Pools:
         return None
 
     def wrong_count(self, cat, n, avoid):
-        """A random image where `cat` is present with a count other than n."""
-        L = [i for i, k in self.any.get(cat, []) if k != n and i != avoid]
-        return L[self.rng.randrange(len(L))] if L else None
+        """A random image where `cat` is present with a count other than n, and every instance is reliable (a crowd
+        region or a cut-off speck would make the count, and so the label, uncertain); None when there is none."""
+        L = self.clean.get(cat, [])
+        for _ in range(self.cfg.absent_tries if L else 0):
+            iid, k = L[self.rng.randrange(len(L))]
+            if k != n and iid != avoid:
+                return iid
+        return None
+
+    def widen(self, cats):
+        """Categories a category-free description may also fit: same COCO supercategory, or confusable (NEAR)."""
+        out = set(cats)
+        for c in cats:
+            out |= set(NEAR.get(c, []))
+            if c in self.supercat:
+                out |= {d for d, s in self.supercat.items() if s == self.supercat[c]}
+        return out
 
     def without(self, bad, avoid):
         """A random image containing none of the categories in `bad` (annotated, crowd included)."""
@@ -211,7 +268,7 @@ def build(records, pools, cfg):
     new = collections.defaultdict(list)
     st = collections.Counter()
     kept, absent_src = [], []
-    twin_kinds, zh_kinds = set(cfg.twin_kinds), set(cfg.zh_kinds)
+    twin_kinds, zh_kinds, near_kinds, generic = set(cfg.twin_kinds), set(cfg.zh_kinds), set(cfg.near_kinds), set(cfg.generic_kinds)
     for r in records:
         iid0 = r.get("image_id")
         keep = []
@@ -221,7 +278,7 @@ def build(records, pools, cfg):
                 p = parse_count(q["text"])
                 iid = pools.take(pools.count, (p[1], p[0]), iid0) if p else None
                 if iid is None:
-                    st["count_neg_dropped"] += 1
+                    st["count_neg_dropped" if p else "count_neg_unparsed"] += 1
                     continue
                 n, c = p
                 new[iid].append(question(q["text"], q.get("lang"), KIND_COUNT_POS, [rbox(o) for o in by[iid][c]]))
@@ -230,10 +287,18 @@ def build(records, pools, cfg):
                 p = parse_pos(q["text"])
                 iid = pools.take(pools.side, (p[1], p[0]), iid0) if p else None
                 if iid is None:
-                    st["pos_neg_dropped"] += 1
+                    st["pos_neg_dropped" if p else "pos_neg_unparsed"] += 1
                     continue
                 new[iid].append(question(q["text"], q.get("lang"), KIND_POS_POS, [rbox(by[iid][p[1]][0])]))
                 st["pos_pairs"] += 1
+            elif k in near_kinds:
+                c = parse_near(q["text"])
+                iid = pools.take(pools.sole, c, iid0) if c else None
+                if iid is None:
+                    st["near_neg_dropped" if c else "near_neg_unparsed"] += 1
+                    continue
+                new[iid].append(question(q["text"], q.get("lang"), KIND_NEAR_POS, [rbox(by[iid][c][0])]))
+                st["near_pairs"] += 1
             elif q.get("present") and k in zh_kinds:
                 absent_src.append((iid0, q, KIND_ZH_NEG))
             elif q.get("present") and k in twin_kinds:
@@ -252,6 +317,8 @@ def build(records, pools, cfg):
                 st["twin_count_wrongn"] += 1
                 continue
         bad = target_cats(q, by.get(iid0, {}), cfg)
+        if k in generic:
+            bad = pools.widen(bad)
         if not bad:
             st[f"{tag}_no_category"] += 1
             continue
@@ -282,8 +349,8 @@ def main():
     ap.add_argument("--seed", type=int)
     a = ap.parse_args()
     cfg = load_config(a.config, seed=a.seed)
-    images, by = load_coco(a.coco)
-    pools = Pools(images, by, load_eval_ids(a.eval_ids), cfg, random.Random(cfg.seed))
+    images, by, supercat = load_coco(a.coco)
+    pools = Pools(images, by, load_eval_ids(a.eval_ids), cfg, random.Random(cfg.seed), supercat)
     kept, new, st = build((json.loads(line) for line in open(a.mix)), pools, cfg)
     os.makedirs(a.out, exist_ok=True)
     with open(f"{a.out}/train.jsonl", "w") as f:
@@ -293,6 +360,7 @@ def main():
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
             st["new_records"] += 1
     st["records_total"] = len(kept) + st["new_records"]
+    st["candidate_images"] = len(pools.pool)     # depends on --coco: record it so a build can be compared
     json.dump(dict(st), open(f"{a.out}/stats_twins.json", "w"), indent=1)
     print(json.dumps(dict(st)))
 

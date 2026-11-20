@@ -2,6 +2,8 @@
   "seed": 14,
   "twin_kinds": ["cat_only", "cat_all", "cf_anchor", "pos_pos_sole", "count_pos", "cf_func", "cf_generic", "cf_rel"],
   "zh_kinds": ["ref_zh"],
+  "near_kinds": [],
+  "generic_kinds": [],
   "piles": ["book", "banana", "carrot", "broccoli", "apple", "orange", "donut"],
   "count_min": 2,
   "count_max": 5,

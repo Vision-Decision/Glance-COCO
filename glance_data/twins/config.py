@@ -1,6 +1,8 @@
 """Settings for the minimal-pair builder and the text-only gate.
 
-The defaults are the v1.4 settings; `configs/twins_v14.json` records the same values explicitly. A JSON file passed
+The defaults are the v1.5 settings (`configs/twins_v15.json`). `configs/twins_v14.json` turns off the families v1.5
+added (near-category pairs, widened exclusion for category-free kinds); the label fixes of v1.5 (reliable wrong-count
+images, every category of an ambiguous word) always apply, so v1.4 itself is reproduced only by commit 23332a6. A JSON file passed
 with `--config` overrides any subset of them (unknown keys are an error, so a typo cannot silently fall back).
 """
 import dataclasses
@@ -17,6 +19,9 @@ class TwinConfig:
     # --- builder
     twin_kinds: list = dataclasses.field(default_factory=lambda: list(TWIN_KINDS))
     zh_kinds: list = dataclasses.field(default_factory=lambda: ["ref_zh"])   # human RefCOCO sentences translated to zh
+    near_kinds: list = dataclasses.field(default_factory=lambda: ["neg_near"])   # "a toaster": gets a present twin
+    # category-free kinds: their absent twin also avoids the target's supercategory and confusable classes
+    generic_kinds: list = dataclasses.field(default_factory=lambda: ["cf_func", "cf_generic", "cf_rel"])
     piles: list = dataclasses.field(default_factory=lambda: ["book", "banana", "carrot", "broccoli", "apple", "orange",
                                                              "donut"])   # often only partly annotated: never count them
     count_min: int = 2
@@ -33,13 +38,14 @@ class TwinConfig:
     test_frac: float = 0.1
     count_kinds: list = dataclasses.field(default_factory=lambda: ["neg_count", "count_pos", "mp_count_pos"])
     position_kinds: list = dataclasses.field(default_factory=lambda: ["neg_position", "pos_pos_sole", "mp_pos_pos"])
+    near_gate_kinds: list = dataclasses.field(default_factory=lambda: ["neg_near", "mp_near_pos"])
     rule_kinds: list = dataclasses.field(default_factory=lambda: [
-        "neg_count", "count_pos", "mp_count_pos", "neg_position", "pos_pos_sole", "mp_pos_pos", "ref_zh", "mp_zh_neg",
-        "cat_only", "cat_all", "cf_anchor", "cf_func", "cf_generic", "cf_rel"])
+        "neg_count", "count_pos", "mp_count_pos", "neg_position", "pos_pos_sole", "mp_pos_pos", "neg_near", "mp_near_pos",
+        "ref_zh", "mp_zh_neg", "cat_only", "cat_all", "cf_anchor", "cf_func", "cf_generic", "cf_rel"])
     # gate name -> [subset, max AUROC]; S1_full / S4_full are reported, they are not expected to pass (see docs/TWINS.md)
     gates: dict = dataclasses.field(default_factory=lambda: {
         "S1": ["rule", 0.65], "S2": ["count", 0.55], "S3": ["position", 0.55], "S4": ["zh_rule", 0.55],
-        "S1_full": ["all", 0.65], "S4_full": ["zh", 0.55]})
+        "S5": ["near", 0.55], "S1_full": ["all", 0.65], "S4_full": ["zh", 0.55]})
 
 
 def load_config(path=None, **overrides):

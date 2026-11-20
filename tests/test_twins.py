@@ -7,7 +7,7 @@ import sys
 import numpy as np
 import pytest
 
-from glance_data.twins.build import Pools, build, cats_in, parse_count, parse_pos, reliable
+from glance_data.twins.build import Pools, build, cats_in, parse_count, parse_near, parse_pos, reliable
 from glance_data.twins.config import TwinConfig, load_config
 from glance_data.twins.gate import auroc, held_out, run
 
@@ -30,9 +30,9 @@ def coco(spec):
     return images, by
 
 
-def pools(spec, held=(), seed=0):
+def pools(spec, held=(), seed=0, supercat=None):
     images, by = coco(spec)
-    return Pools(images, by, set(held), CFG, random.Random(seed))
+    return Pools(images, by, set(held), CFG, random.Random(seed), supercat)
 
 
 def q(text, kind, present, lang="en", boxes=None, **kw):
@@ -109,6 +109,48 @@ def test_count_pos_twin_prefers_wrong_count_image():
     p = pools({1: [ann("dog", DOG_L), ann("dog", DOG_R)], 2: [ann("dog", DOG_M)], 3: [ann("cat", DOG_M)]})
     _, new, st = build([rec(1, q("the two dogs", "count_pos", True, boxes=[DOG_L, DOG_R]))], p, CFG)
     assert st["twin_count_wrongn"] == 1 and list(new) == [2]                # dog present, but one, not two
+
+
+def test_count_pos_twin_never_uses_an_uncertain_count():
+    # image 2: two clear dogs plus an annotated speck (3 annotations, but "the two dogs" is visibly true);
+    # image 3: a crowd region of dogs (count unknown). Neither may be the absent twin.
+    p = pools({1: [ann("dog", DOG_L), ann("dog", DOG_R)], 2: [ann("dog", DOG_L), ann("dog", DOG_R), ann("dog", [5, 5, 15, 15])],
+               3: [ann("dog", DOG_M, crowd=True)], 4: [ann("cat", DOG_M)]})
+    for seed in range(5):
+        p.rng = random.Random(seed)
+        _, new, st = build([rec(1, q("the two dogs", "count_pos", True, boxes=[DOG_L, DOG_R]))], p, CFG)
+        assert st["twin_count_wrongn"] == 0 and list(new) == [4]               # falls back to an image without dogs
+
+
+def test_ambiguous_word_rules_out_every_category_it_can_name():
+    assert cats_in("the bag on the chair") == {"backpack", "handbag", "chair"}
+    assert cats_in("a glass of water") == {"wine glass", "cup"} and cats_in("一个瓶子") >= {"bottle", "vase"}
+    spec = {1: [ann("person", DOG_L)], 2: [ann("handbag", DOG_M)], 3: [ann("backpack", DOG_M)], 4: [ann("cat", DOG_M)]}
+    for seed in range(10):
+        _, new, _ = build([rec(1, q("the man with a bag", "cf_anchor", True, boxes=[DOG_L]))], pools(spec, seed=seed), CFG)
+        assert list(new) == [4]
+
+
+def test_near_negative_gets_present_twin_with_sole_instance_or_is_dropped():
+    assert parse_near("a toaster") == "toaster" and parse_near("an apple") == "apple"
+    assert parse_near("一台烤面包机") == "toaster" and parse_near("a black dog") is None
+    p = pools({1: [ann("dog", DOG_M)], 2: [ann("toaster", DOG_L)], 3: [ann("toaster", DOG_L), ann("toaster", DOG_R)]})
+    kept, new, st = build([rec(1, q("a toaster", "neg_near", False), q("一台烤面包机", "neg_near", False, "zh"),
+                               q("an oven", "neg_near", False), q("a black dog", "neg_near", False))], p, CFG)
+    assert st["near_pairs"] == 2 and st["near_neg_dropped"] == 1 and st["near_neg_unparsed"] == 1
+    assert [x["text"] for x in kept[0]["questions"]] == ["a toaster", "一台烤面包机"]
+    assert list(new) == [2] and all(x["kind"] == "mp_near_pos" and x["box"] == DOG_L for x in new[2])
+
+
+def test_category_free_twin_avoids_supercategory_and_confusable_classes():
+    sup = {"chair": "furniture", "couch": "furniture", "bench": "outdoor", "cat": "animal"}
+    spec = {1: [ann("chair", DOG_L)], 2: [ann("couch", DOG_M)], 3: [ann("bench", DOG_M)], 4: [ann("cat", DOG_M)]}
+    for seed in range(10):
+        _, new, _ = build([rec(1, q("something to sit on", "cf_func", True, boxes=[DOG_L]))],
+                          pools(spec, seed=seed, supercat=sup), CFG)
+        assert list(new) == [4]                       # a couch (same supercategory) or bench (NEAR) would fit too
+    _, new, _ = build([rec(1, q("the chair", "cat_only", True, boxes=[DOG_L]))], pools(spec, supercat=sup), CFG)
+    assert list(new)[0] in (2, 3, 4)                  # a named category is not widened
 
 
 def test_held_out_images_are_never_used():

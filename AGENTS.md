@@ -32,7 +32,7 @@ glance_data/
   twins/         minimal pairs: same string, other answer, other image   -> out/twins/ (docs/TWINS.md)
     build.py     count / position / Chinese pairs and missing-category twins
     gate.py      text-only probe gate (AUROC, string-grouped split)
-configs/twins_v14.json  the v1.4 minimal-pair and gate settings
+configs/twins_v15.json  the minimal-pair and gate settings (default); twins_v14.json: v1.4 families only
 hf/DATASET_CARD.md  the dataset card published as README.md on the Hub
 tests/           unit tests for the rule-based logic (no data, no network)
 assets/          logo (light/dark) and README artwork
@@ -93,7 +93,7 @@ The per-image layout is the same as the prepared `train.jsonl`: `image_id, file,
 | `box` | xyxy pixels of the single target, or `null` |
 | `boxes` | all targets (xyxy), `null` when absent |
 | `n_targets` | 0, 1 or more |
-| `kind` | `short medium long casual group function hneg_attribute hneg_relation cat_only cat_all neg_count neg_position neg_near gref_multi`; minimal pairs add `mp_count_pos mp_pos_pos mp_zh_neg mp_twin_neg` |
+| `kind` | `short medium long casual group function hneg_attribute hneg_relation cat_only cat_all neg_count neg_position neg_near gref_multi`; minimal pairs add `mp_count_pos mp_pos_pos mp_near_pos mp_zh_neg mp_twin_neg` |
 | `lang` | `en` or `zh` |
 | `src` | `aug_llm`, `aug_function`, `aug_code`, `aug_gref` or `aug_twin` |
 | `twin_of` | only on `mp_twin_neg` and `mp_zh_neg`: the kind of the present question this one twins |
@@ -116,8 +116,8 @@ Multi-target questions (`n_targets > 1`) need a consumer that supports several b
    - drop functions that touch crowd-annotated categories.
 4. **Rule-made questions come in pairs.** `twins/build.py` gives every rule-made negative a present question with the
    same string on another image (and drops the negative when no such image exists), and every rule-answered positive
-   an absent one. Ground truth: COCO counts, the sole instance's side, and category absence. Check a new mix with
-   `make twin-gate`; S1-S4 must stay within their thresholds (docs/TWINS.md).
+   an absent one. Ground truth: COCO counts, the sole instance's side or presence, and category absence. Check a new
+   mix with `make twin-gate`; S1-S5 must stay within their thresholds (docs/TWINS.md).
 5. **Held-out images stay held out.** Training augmentation uses only images in `JEV_PREP/train.jsonl`, which has every
    benchmark image removed. The diagnostic set uses `refcoco_val` images. Never mix the two.
 6. **DeepSeek usage.** Use `deepseek-flash` with thinking disabled (`thinking: {type: disabled}`): about 0.005 CNY per
