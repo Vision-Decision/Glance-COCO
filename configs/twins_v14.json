@@ -1,0 +1,23 @@
+{
+  "seed": 14,
+  "twin_kinds": ["cat_only", "cat_all", "cf_anchor", "pos_pos_sole", "count_pos", "cf_func", "cf_generic", "cf_rel"],
+  "zh_kinds": ["ref_zh"],
+  "piles": ["book", "banana", "carrot", "broccoli", "apple", "orange", "donut"],
+  "count_min": 2,
+  "count_max": 5,
+  "min_area": 0.005,
+  "edge_px": 2.0,
+  "edge_min_area": 0.02,
+  "side_frac": 0.3333333333333333,
+  "box_match_px": 2.0,
+  "absent_tries": 50,
+  "max_questions_per_record": 48,
+  "probe_cap": 1500000,
+  "test_frac": 0.1,
+  "count_kinds": ["neg_count", "count_pos", "mp_count_pos"],
+  "position_kinds": ["neg_position", "pos_pos_sole", "mp_pos_pos"],
+  "rule_kinds": ["neg_count", "count_pos", "mp_count_pos", "neg_position", "pos_pos_sole", "mp_pos_pos", "ref_zh",
+                 "mp_zh_neg", "cat_only", "cat_all", "cf_anchor", "cf_func", "cf_generic", "cf_rel"],
+  "gates": {"S1": ["rule", 0.65], "S2": ["count", 0.55], "S3": ["position", 0.55], "S4": ["zh_rule", 0.55],
+            "S1_full": ["all", 0.65], "S4_full": ["zh", 0.55]}
+}
